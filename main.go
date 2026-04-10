@@ -1,25 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/mappu/miqt/qt"
+	"after_the_end/app/appwindow"
 )
 
 func main() {
-	qt.NewQApplication(os.Args)
+	view := appwindow.NewWindowView()
 
-	btn := qt.NewQPushButton3("Hello world!")
-	btn.SetFixedWidth(320)
-
-	counter := 0
-
-	btn.OnPressed(func() {
-		counter++
-		btn.SetText(fmt.Sprintf("You have clicked the button %d time(s)", counter))
-	})
-
-	btn.Show()
-	qt.QApplication_Exec()
+	if err := view.ViewInit(); err != nil {
+		panic(err)
+	}
 }
