@@ -1,13 +1,13 @@
 package backbone
 
 import (
-	"errors"
+	"github.com/mappu/miqt/qt"
 )
 
 type View interface {
-	ViewInit() error
+	ViewInit(parent *qt.QWidget)
 	ViewUpdate()
-	ViewDestroy() error
+	ViewDestroy()
 }
 
 type BaseView struct {
@@ -18,26 +18,15 @@ func NewBaseView() *BaseView {
 	return &BaseView{}
 }
 
-func (b *BaseView) Mount(view View) error {
-	if err := view.ViewInit(); err != nil {
-		return err
-	}
-
+func (b *BaseView) Mount(parent *qt.QWidget, view View) {
+	view.ViewInit(parent)
 	b.children = append(b.children, view)
-	return nil
 }
 
-func (b *BaseView) ViewDestroy() error {
-	var errs []error
+func (b *BaseView) ViewUpdate() {}
+
+func (b *BaseView) ViewDestroy() {
 	for _, child := range b.children {
-		if err := child.ViewDestroy(); err != nil {
-			errs = append(errs, err)
-		}
+		child.ViewDestroy()
 	}
-
-	if len(errs) > 0 {
-		return errors.Join(errs...)
-	}
-
-	return nil
 }

@@ -1,13 +1,19 @@
 package main
 
 import (
+	"os"
+
 	"after_the_end/app/appwindow"
+
+	"github.com/mappu/miqt/qt"
 )
 
 func main() {
-	view := appwindow.NewWindowView()
+	app := qt.NewQApplication(os.Args)
 
-	if err := view.ViewInit(); err != nil {
-		panic(err)
-	}
+	windowView := appwindow.NewWindowView()
+	windowView.ViewInit(nil)
+
+	app.OnDestroyed(windowView.ViewDestroy)
+	qt.QApplication_Exec()
 }

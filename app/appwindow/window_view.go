@@ -1,8 +1,6 @@
 package appwindow
 
 import (
-	"os"
-
 	"after_the_end/backbone"
 
 	"github.com/mappu/miqt/qt"
@@ -10,6 +8,7 @@ import (
 
 type WindowView struct {
 	*backbone.BaseView
+	window *qt.QMainWindow
 }
 
 func NewWindowView() *WindowView {
@@ -18,15 +17,13 @@ func NewWindowView() *WindowView {
 	}
 }
 
-func (v *WindowView) ViewInit() error {
-	qt.NewQApplication(os.Args)
+func (v *WindowView) ViewInit(_ *qt.QWidget) {
+	v.window = qt.NewQMainWindow2()
+	v.window.SetWindowTitle("AfterTheEnd")
 
-	if err := v.Mount(NewButtonView()); err != nil {
-		return err
-	}
+	centralWidget := qt.NewQWidget2()
+	v.Mount(centralWidget, NewCounterView())
+	v.window.SetCentralWidget(centralWidget)
 
-	qt.QApplication_Exec()
-	return nil
+	v.window.ShowMaximized()
 }
-
-func (v *WindowView) ViewUpdate() {}
