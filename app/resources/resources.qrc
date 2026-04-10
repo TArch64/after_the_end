@@ -2,4 +2,11 @@
   <qresource prefix="/">
     <file>images/background.jpg</file>
   </qresource>
+
+  <qresource prefix="/">
+    <file>fonts/pixelify-sans-regular.ttf</file>
+    <file>fonts/pixelify-sans-medium.ttf</file>
+    <file>fonts/pixelify-sans-semibold.ttf</file>
+    <file>fonts/pixelify-sans-bold.ttf</file>
+  </qresource>
 </RCC>

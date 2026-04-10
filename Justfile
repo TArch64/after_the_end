@@ -1,5 +1,7 @@
 #!/usr/bin/env just --justfile
 
-build:
-  CC='clang' CXX='clang++' CGO_CXXFLAGS='-std=c++17' go build -ldflags "-s -w" -o dist/game .
+compile_qrc:
+  go tool miqt-rcc -Package resources -Input ./app/resources/resources.qrc
 
+build: compile_qrc
+  CC='clang' CXX='clang++' CGO_CXXFLAGS='-std=c++17' go build -ldflags "-s -w" -o dist/game .

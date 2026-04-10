@@ -1,6 +1,7 @@
 package appwindow
 
 import (
+	"after_the_end/app/appwindow/start"
 	"after_the_end/backbone"
 
 	"github.com/mappu/miqt/qt"
@@ -22,9 +23,7 @@ func (v *WindowView) ViewInit(_ *qt.QWidget) {
 	v.window.SetWindowTitle("AfterTheEnd")
 
 	centralWidget := qt.NewQWidget2()
-	centralWidget.SetStyleSheet("background-image: url(:/images/background.jpg)")
-
-	v.Mount(centralWidget, NewCounterView())
+	v.Mount(centralWidget, start.NewView())
 
 	v.window.SetCentralWidget(centralWidget)
 	v.window.ShowMaximized()
