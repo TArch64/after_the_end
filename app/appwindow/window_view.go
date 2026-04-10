@@ -20,10 +20,12 @@ func NewWindowView() *WindowView {
 
 func (v *WindowView) ViewInit(_ *qt.QWidget) {
 	v.window = qt.NewQMainWindow2()
+	v.window.SetObjectName("main_window")
 	v.window.SetWindowTitle("AfterTheEnd")
 
 	centralWidget := qt.NewQWidget2()
-	v.Mount(centralWidget, start.NewView())
+	centralWidget.SetObjectName("window_central")
+	v.MountToWidget(centralWidget, start.NewView())
 
 	v.window.SetCentralWidget(centralWidget)
 	v.window.ShowMaximized()
