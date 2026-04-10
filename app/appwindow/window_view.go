@@ -22,8 +22,10 @@ func (v *WindowView) ViewInit(_ *qt.QWidget) {
 	v.window.SetWindowTitle("AfterTheEnd")
 
 	centralWidget := qt.NewQWidget2()
-	v.Mount(centralWidget, NewCounterView())
-	v.window.SetCentralWidget(centralWidget)
+	centralWidget.SetStyleSheet("background-image: url(:/images/background.jpg)")
 
+	v.Mount(centralWidget, NewCounterView())
+
+	v.window.SetCentralWidget(centralWidget)
 	v.window.ShowMaximized()
 }

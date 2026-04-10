@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"after_the_end/app/appwindow"
+	_ "after_the_end/app/resources"
 
 	"github.com/mappu/miqt/qt"
 )
