@@ -11,6 +11,7 @@ func Up(db *bun.DB) (err error) {
 	migrations := migrate.NewMigrations()
 
 	v1AddGameSavesTable(migrations)
+	v2AddGameSavePosition(migrations)
 
 	ctx := context.Background()
 	migrator := migrate.NewMigrator(db, migrations)

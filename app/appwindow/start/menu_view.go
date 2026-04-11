@@ -1,7 +1,13 @@
 package start
 
 import (
+	"context"
+	"log/slog"
+
 	"after_the_end/backbone"
+	"after_the_end/db"
+	"after_the_end/db/model"
+	"after_the_end/logs"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -29,7 +35,7 @@ func (v *MenuView) ViewInit(parent *qt.QWidget) {
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
-		OnPressed: func() {},
+		OnPressed: v.newGame,
 	}))
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
@@ -71,4 +77,40 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
     }`)
 
 	return button.QWidget
+}
+
+func (v *MenuView) newGame() {
+	ctx := context.Background()
+
+	savesCount, err := db.DB().
+		NewSelect().
+		Model((*model.GameSave)(nil)).
+		Count(ctx)
+
+	if err != nil {
+		slog.Error("failed to create new game save",
+			logs.AttrError(err),
+		)
+		return
+	}
+
+	save := &model.GameSave{
+		Position: uint8(savesCount),
+	}
+
+	_, err = db.DB().
+		NewInsert().
+		Model(save).
+		Exec(ctx)
+
+	if err != nil {
+		slog.Error("failed to create new game save",
+			logs.AttrError(err),
+		)
+		return
+	}
+
+	slog.Info("successfully created new game save",
+		slog.Uint64("save_id", uint64(save.ID)),
+	)
 }
