@@ -47,8 +47,8 @@ func (v *View) renderContainer() *qt.QWidget {
 	widget.SetObjectName("saves_container")
 
 	screen := qt.QGuiApplication_PrimaryScreen().Geometry()
-	width := max(float32(screen.Width())*0.6, 1000)
-	height := max(float32(screen.Height())*0.6, 1000)
+	width := min(float32(screen.Width())*0.6, 1000)
+	height := min(float32(screen.Height())*0.6, 1000)
 	widget.SetFixedSize2(int(width), int(height))
 
 	widget.SetStyleSheet(`
