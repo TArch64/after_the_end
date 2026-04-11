@@ -5,11 +5,16 @@ import (
 
 	"after_the_end/app/appwindow"
 	_ "after_the_end/app/resources"
+	"after_the_end/db"
 
 	"github.com/mappu/miqt/qt"
 )
 
 func main() {
+	if err := db.Setup(); err != nil {
+		panic(err)
+	}
+
 	app := qt.NewQApplication(os.Args)
 	initFont()
 
