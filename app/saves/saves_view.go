@@ -1,7 +1,9 @@
 package saves
 
 import (
+	"after_the_end/app/router"
 	"after_the_end/backbone"
+	"after_the_end/backbone/styled"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -23,8 +25,9 @@ func (v *View) Layout() *qt.QLayout {
 
 func (v *View) ViewInit(parent *qt.QWidget) {
 	widget := qt.NewQWidget2()
+	widget.SetStyleSheet(styled.Transparent)
 	widget.SetObjectName("saves")
-	widget.SetStyleSheet("background-image: url(:/images/background.jpg)")
+	widget.SetStyleSheet("background: url(:/images/background.jpg)")
 
 	column := qt.NewQVBoxLayout2()
 	column.SetObjectName("saves_column")
@@ -44,22 +47,47 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 
 func (v *View) renderContainer() *qt.QWidget {
 	widget := qt.NewQWidget2()
+	widget.SetStyleSheet(styled.Transparent)
 	widget.SetObjectName("saves_container")
 
 	screen := qt.QGuiApplication_PrimaryScreen().Geometry()
 	width := min(float32(screen.Width())*0.6, 1000)
+	widget.SetFixedWidth(int(width))
+
+	layout := qt.NewQVBoxLayout(widget)
+	widget.SetStyleSheet(styled.Transparent)
+	layout.SetObjectName("saves_container")
+	layout.AddStretch()
+	layout.AddWidget(v.renderTitle())
+
+	scrollArea := qt.NewQScrollArea2()
+	scrollArea.SetObjectName("saves_scroll")
+
 	height := min(float32(screen.Height())*0.6, 1000)
-	widget.SetFixedSize2(int(width), int(height))
+	scrollArea.SetFixedHeight(int(height))
+	scrollArea.SetStyleSheet(styled.Card)
+	layout.AddWidget(scrollArea.QWidget)
 
-	widget.SetStyleSheet(`
-		background-color: #dddddd;
-		color: #444444;
-		font-size: 18px;
-		font-weight: bold;
-		padding: 12px 32px;
-		border: 3px solid #ffffff;
-		border-right-color: #aaaaaa;
-		border-bottom-color: #aaaaaa;`)
-
+	layout.AddWidget(v.renderBackButton())
+	layout.AddStretch()
 	return widget
+}
+
+func (v *View) renderTitle() *qt.QWidget {
+	title := qt.NewQLabel3("Saves")
+	title.SetStyleSheet(styled.Title2)
+	title.SetGraphicsEffect(styled.TitleShadow())
+	title.SetContentsMargins(0, 0, 0, 10)
+	return title.QWidget
+}
+
+func (v *View) renderBackButton() *qt.QWidget {
+	button := qt.NewQPushButton4(qt.NewQIcon4(":/icons/back-main.svg"), "Back")
+	button.SetStyleSheet(styled.Button)
+
+	button.OnReleased(func() {
+		router.Push(router.RouteStart)
+	})
+
+	return button.QWidget
 }

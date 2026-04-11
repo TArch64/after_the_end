@@ -1,6 +1,8 @@
 package backbone
 
 import (
+	"after_the_end/backbone/styled"
+
 	"github.com/mappu/miqt/qt"
 )
 
@@ -28,7 +30,7 @@ func (b *BaseView) MountToWidget(parent *qt.QWidget, view View) {
 func (b *BaseView) MountToLayout(layout *qt.QLayout, view View) {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("mount_layout")
-	widget.SetStyleSheet("background: transparent")
+	widget.SetStyleSheet(styled.Transparent)
 	b.MountToWidget(widget, view)
 	layout.AddWidget(widget)
 }

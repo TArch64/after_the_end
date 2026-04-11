@@ -2,6 +2,7 @@ package start
 
 import (
 	"after_the_end/backbone"
+	"after_the_end/backbone/styled"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -24,7 +25,7 @@ func (v *View) Layout() *qt.QLayout {
 func (v *View) ViewInit(parent *qt.QWidget) {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("start_window")
-	widget.SetStyleSheet("background-image: url(:/images/background.jpg)")
+	widget.SetStyleSheet("background: url(:/images/background.jpg)")
 
 	row := qt.NewQHBoxLayout2()
 	row.SetObjectName("start_window_row")
@@ -43,7 +44,7 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 func (v *View) renderAside() *qt.QWidget {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("aside")
-	widget.SetStyleSheet("background: transparent")
+	widget.SetStyleSheet(styled.Transparent)
 
 	layout := qt.NewQVBoxLayout2()
 	layout.SetObjectName("aside")
@@ -61,18 +62,8 @@ func (v *View) renderAside() *qt.QWidget {
 func (v *View) renderTitle() *qt.QWidget {
 	title := qt.NewQLabel3("After the End")
 	title.SetAlignment(qt.AlignCenter)
-
-	title.SetStyleSheet(`
-		color: #fff;
-		font-size: 80px;
-		font-weight: 400;
-		background: transparent;`)
-
-	glow := qt.NewQGraphicsDropShadowEffect2(title.QObject)
-	glow.SetBlurRadius(20)
-	glow.SetColor(qt.NewQColor11(0, 0, 0, 120))
-	glow.SetOffset2(2, 4)
-	title.SetGraphicsEffect(glow.QGraphicsEffect)
+	title.SetStyleSheet(styled.Title1)
+	title.SetGraphicsEffect(styled.TitleShadow())
 
 	return title.QWidget
 }

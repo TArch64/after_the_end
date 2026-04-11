@@ -4,6 +4,10 @@
   </qresource>
 
   <qresource prefix="/">
+    <file>icons/back-main.svg</file>
+  </qresource>
+
+  <qresource prefix="/">
     <file>fonts/pixelify-sans-regular.ttf</file>
     <file>fonts/pixelify-sans-medium.ttf</file>
     <file>fonts/pixelify-sans-semibold.ttf</file>
