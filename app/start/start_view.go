@@ -8,12 +8,17 @@ import (
 
 type View struct {
 	*backbone.BaseView
+	layout *qt.QLayout
 }
 
 func NewView() *View {
 	return &View{
 		BaseView: backbone.NewBaseView(),
 	}
+}
+
+func (v *View) Layout() *qt.QLayout {
+	return v.layout
 }
 
 func (v *View) ViewInit(parent *qt.QWidget) {
@@ -32,6 +37,7 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 	cover.SetObjectName("start_window_cover")
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)
+	v.layout = cover.QLayout
 }
 
 func (v *View) renderAside() *qt.QWidget {

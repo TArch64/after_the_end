@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 
+	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db"
 	"after_the_end/db/model"
@@ -39,8 +40,11 @@ func (v *MenuView) ViewInit(parent *qt.QWidget) {
 	}))
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
-		Title:     "Load Game",
-		OnPressed: func() {},
+		Title: "Load Game",
+
+		OnPressed: func() {
+			router.Push(router.RouteSaves)
+		},
 	}))
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{

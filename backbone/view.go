@@ -8,6 +8,8 @@ type View interface {
 	ViewInit(parent *qt.QWidget)
 	ViewUpdate()
 	ViewDestroy()
+	Widget() *qt.QWidget
+	Layout() *qt.QLayout
 }
 
 type BaseView struct {
@@ -37,4 +39,20 @@ func (b *BaseView) ViewDestroy() {
 	for _, child := range b.children {
 		child.ViewDestroy()
 	}
+
+	if widget := b.Widget(); widget != nil {
+		widget.DeleteLater()
+	}
+
+	if layout := b.Layout(); layout != nil {
+		layout.DeleteLater()
+	}
+}
+
+func (b *BaseView) Widget() *qt.QWidget {
+	return nil
+}
+
+func (b *BaseView) Layout() *qt.QLayout {
+	return nil
 }
