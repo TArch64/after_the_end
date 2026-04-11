@@ -1,9 +1,14 @@
 package saves
 
 import (
+	"log/slog"
+
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
+	"after_the_end/db"
+	"after_the_end/db/model"
+	"after_the_end/logs"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -11,6 +16,7 @@ import (
 type View struct {
 	*backbone.BaseView
 	layout *qt.QLayout
+	saves  []*model.GameSave
 }
 
 func NewView() *View {
@@ -24,6 +30,8 @@ func (v *View) Layout() *qt.QLayout {
 }
 
 func (v *View) ViewInit(parent *qt.QWidget) {
+	v.fetch()
+
 	widget := qt.NewQWidget2()
 	widget.SetStyleSheet(styled.Transparent)
 	widget.SetObjectName("saves")
@@ -43,6 +51,19 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)
 	v.layout = cover.QLayout
+}
+
+func (v *View) fetch() {
+	err := db.DB().
+		NewSelect().
+		Model(&v.saves).
+		Scan(v.Ctx)
+
+	if err != nil {
+		slog.Error("failed to fetch saves",
+			logs.AttrError(err),
+		)
+	}
 }
 
 func (v *View) renderContainer() *qt.QWidget {
@@ -66,6 +87,7 @@ func (v *View) renderContainer() *qt.QWidget {
 	height := min(float32(screen.Height())*0.6, 1000)
 	scrollArea.SetFixedHeight(int(height))
 	scrollArea.SetStyleSheet(styled.Card)
+	scrollArea.SetLayout(v.renderList())
 	layout.AddWidget(scrollArea.QWidget)
 
 	layout.AddWidget(v.renderBackButton())
@@ -79,6 +101,16 @@ func (v *View) renderTitle() *qt.QWidget {
 	title.SetGraphicsEffect(styled.TitleShadow())
 	title.SetContentsMargins(0, 0, 0, 10)
 	return title.QWidget
+}
+
+func (v *View) renderList() *qt.QLayout {
+	column := qt.NewQVBoxLayout2()
+
+	for _, save := range v.saves {
+		v.MountToLayout(column.QLayout, NewSaveView(save))
+	}
+
+	return column.QLayout
 }
 
 func (v *View) renderBackButton() *qt.QWidget {

@@ -1,12 +1,15 @@
 package backbone
 
 import (
+	"context"
+
 	"after_the_end/backbone/styled"
 
 	"github.com/mappu/miqt/qt"
 )
 
 type View interface {
+	ViewBeforeInit()
 	ViewInit(parent *qt.QWidget)
 	ViewUpdate()
 	ViewDestroy()
@@ -15,14 +18,21 @@ type View interface {
 }
 
 type BaseView struct {
-	children []View
+	children  []View
+	Ctx       context.Context
+	cancelCtx context.CancelFunc
 }
 
 func NewBaseView() *BaseView {
 	return &BaseView{}
 }
 
+func (b *BaseView) ViewBeforeInit() {
+	b.Ctx, b.cancelCtx = context.WithCancel(context.Background())
+}
+
 func (b *BaseView) MountToWidget(parent *qt.QWidget, view View) {
+	view.ViewBeforeInit()
 	view.ViewInit(parent)
 	b.children = append(b.children, view)
 }
@@ -38,6 +48,8 @@ func (b *BaseView) MountToLayout(layout *qt.QLayout, view View) {
 func (b *BaseView) ViewUpdate() {}
 
 func (b *BaseView) ViewDestroy() {
+	b.cancelCtx()
+
 	for _, child := range b.children {
 		child.ViewDestroy()
 	}

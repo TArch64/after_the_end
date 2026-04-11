@@ -7,13 +7,16 @@ import (
 const Title1 = `
 color: #fff;
 font-size: 80px;
-font-weight: 400;
 background: transparent;`
 
 const Title2 = `
 color: #fff;
 font-size: 60px;
-font-weight: 400;
+background: transparent;`
+
+const BodyWhite = `
+color: #fff;
+font-size: 20px;
 background: transparent;`
 
 func TitleShadow() *qt.QGraphicsEffect {

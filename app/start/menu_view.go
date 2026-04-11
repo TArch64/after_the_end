@@ -1,7 +1,6 @@
 package start
 
 import (
-	"context"
 	"log/slog"
 
 	"after_the_end/app/router"
@@ -62,12 +61,10 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 }
 
 func (v *MenuView) newGame() {
-	ctx := context.Background()
-
 	savesCount, err := db.DB().
 		NewSelect().
 		Model((*model.GameSave)(nil)).
-		Count(ctx)
+		Count(v.Ctx)
 
 	if err != nil {
 		slog.Error("failed to create new game save",
@@ -83,7 +80,7 @@ func (v *MenuView) newGame() {
 	_, err = db.DB().
 		NewInsert().
 		Model(save).
-		Exec(ctx)
+		Exec(v.Ctx)
 
 	if err != nil {
 		slog.Error("failed to create new game save",

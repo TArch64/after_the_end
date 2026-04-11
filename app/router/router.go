@@ -54,6 +54,7 @@ func (v *View) renderRoute(name RouteName) {
 
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("router_container")
+	v.currentRoute.ViewBeforeInit()
 	v.currentRoute.ViewInit(widget)
 
 	cover := qt.NewQVBoxLayout(v.parent)
@@ -61,4 +62,11 @@ func (v *View) renderRoute(name RouteName) {
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)
 	v.currentLayout = cover.QLayout
+}
+
+func (v *View) ViewDestroy() {
+	if v.currentRoute != nil {
+		v.currentRoute.ViewDestroy()
+		v.currentLayout.DeleteLater()
+	}
 }
