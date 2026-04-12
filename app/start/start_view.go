@@ -25,7 +25,7 @@ func (v *View) Layout() *qt.QLayout {
 func (v *View) ViewInit(parent *qt.QWidget) {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("start_window")
-	widget.SetStyleSheet("background: url(:/images/background.jpg)")
+	widget.SetStyleSheet("#start_window { background: url(:/images/background.jpg) }")
 
 	row := qt.NewQHBoxLayout2()
 	row.SetObjectName("start_window_row")
@@ -44,7 +44,6 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 func (v *View) renderAside() *qt.QWidget {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("aside")
-	widget.SetStyleSheet(styled.Reset)
 
 	layout := qt.NewQVBoxLayout2()
 	layout.SetObjectName("aside")

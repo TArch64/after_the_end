@@ -1,8 +1,6 @@
 package backbone
 
 import (
-	"after_the_end/backbone/styled"
-
 	"github.com/mappu/miqt/qt"
 )
 
@@ -23,7 +21,6 @@ func (b *StatelessView) MountToWidget(parent *qt.QWidget, view View) {
 func (b *StatelessView) MountForLayout(view View) *qt.QWidget {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("mount_layout")
-	widget.SetStyleSheet(styled.Reset)
 	b.MountToWidget(widget, view)
 	return widget
 }

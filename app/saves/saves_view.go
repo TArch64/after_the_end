@@ -1,8 +1,6 @@
 package saves
 
 import (
-	"log"
-
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -30,7 +28,7 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("saves")
-	widget.SetStyleSheet("background: url(:/images/background.jpg)")
+	widget.SetStyleSheet("#saves { background: url(:/images/background.jpg) }")
 
 	column := qt.NewQVBoxLayout2()
 	column.SetObjectName("saves_column")
@@ -53,10 +51,7 @@ func (v *View) renderContainer() *qt.QWidget {
 	width := min(int(float32(screen.Width())*0.6), 1000)
 	height := min(int(float32(screen.Height())*0.6), 1000)
 
-	log.Printf("screen width: %v, height: %v", width, height)
-
 	widget := qt.NewQWidget2()
-	widget.SetStyleSheet(styled.Reset)
 	widget.SetObjectName("saves_container")
 
 	layout := qt.NewQVBoxLayout(widget)
@@ -87,7 +82,8 @@ func (v *View) renderTitle() *qt.QWidget {
 
 func (v *View) renderList(scrollArea *qt.QScrollArea) *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetStyleSheet(styled.Reset)
+	widget.SetObjectName("saves_list")
+	widget.SetStyleSheet(styled.S("#saves_list", styled.Transparent))
 	widget.SetFixedWidth(scrollArea.Width() - scrollArea.VerticalScrollBar().Width())
 
 	column := qt.NewQVBoxLayout(widget)
