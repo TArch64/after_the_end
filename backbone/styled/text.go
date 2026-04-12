@@ -5,18 +5,22 @@ import (
 )
 
 const Title1 = `
+letter-spacing: 4px;
 color: #fff;
 font-size: 80px;`
 
 const Title2 = `
+letter-spacing: 2px;
 color: #fff;
 font-size: 60px;`
 
 const Body = `
+letter-spacing: 2px;
 color: #444;
 font-size: 20px;`
 
 const Body2 = `
+letter-spacing: 2px;
 color: #888;
 font-size: 18px;`
 

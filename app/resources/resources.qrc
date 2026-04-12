@@ -9,9 +9,14 @@
   </qresource>
 
   <qresource prefix="/">
-    <file>fonts/pixelify-sans-regular.ttf</file>
-    <file>fonts/pixelify-sans-medium.ttf</file>
-    <file>fonts/pixelify-sans-semibold.ttf</file>
-    <file>fonts/pixelify-sans-bold.ttf</file>
+    <file>fonts/Handjet-Black.ttf</file>
+    <file>fonts/Handjet-Bold.ttf</file>
+    <file>fonts/Handjet-ExtraBold.ttf</file>
+    <file>fonts/Handjet-ExtraLight.ttf</file>
+    <file>fonts/Handjet-Light.ttf</file>
+    <file>fonts/Handjet-Medium.ttf</file>
+    <file>fonts/Handjet-Regular.ttf</file>
+    <file>fonts/Handjet-SemiBold.ttf</file>
+    <file>fonts/Handjet-Thin.ttf</file>
   </qresource>
 </RCC>

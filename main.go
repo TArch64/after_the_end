@@ -26,9 +26,15 @@ func main() {
 }
 
 func initFont() {
-	qt.QFontDatabase_AddApplicationFont(":/fonts/pixelify-sans-bold.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/pixelify-sans-medium.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/pixelify-sans-regular.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/pixelify-sans-semibold.ttf")
-	qt.QApplication_SetFont(qt.NewQFont6("Pixelify Sans", 20))
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Black.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Bold.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-ExtraBold.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-ExtraLight.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Light.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Medium.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Regular.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-SemiBold.ttf")
+	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Thin.ttf")
+
+	qt.QApplication_SetFont(qt.NewQFont6("Handjet", 20))
 }

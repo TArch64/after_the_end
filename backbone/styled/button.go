@@ -2,6 +2,7 @@ package styled
 
 const Button = `
 QPushButton {
+  letter-spacing: 2px;
 	background: #ddd;
 	color: #444;
 	font-size: 18px;
