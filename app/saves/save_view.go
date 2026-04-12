@@ -1,8 +1,7 @@
 package saves
 
 import (
-	"fmt"
-
+	"after_the_end/app/confirm"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
@@ -50,7 +49,7 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_delete",
 		Icon:      qt.NewQIcon4(":/icons/trash-main.svg"),
-		OnPressed: v.onDeleted,
+		OnPressed: v.delete,
 	}))
 
 	return container
@@ -63,7 +62,7 @@ func (v *SaveView) renderInfoColumn() *qt.QWidget {
 	column := qt.NewQVBoxLayout(widget)
 	column.SetObjectName("save_info")
 
-	title := qt.NewQLabel3(fmt.Sprintf("Save #%d", v.Model.GameSave.ID))
+	title := qt.NewQLabel3(v.Model.FormatTitle())
 	title.SetObjectName("save_title")
 	title.SetStyleSheet(styled.Body)
 	column.AddWidget(title.QWidget)
@@ -87,4 +86,16 @@ func (v *SaveView) renderAction(action *SaveAction) *qt.QWidget {
 	button.SetStyleSheet(styled.ButtonIconSecondary)
 	button.OnReleased(action.OnPressed)
 	return button.QWidget
+}
+
+func (v *SaveView) delete() {
+	confirmed := confirm.Show(&confirm.Options{
+		Parent: v.Root,
+		Title:  v.Model.FormatTitle(),
+		Text:   "Are you sure you want to delete this save?",
+	})
+
+	if confirmed {
+		v.onDeleted()
+	}
 }
