@@ -23,11 +23,13 @@ func NewMenuView() *MenuView {
 	}
 }
 
-func (v *MenuView) ViewInit(parent *qt.QWidget) {
-	layout := qt.NewQVBoxLayout2()
+func (v *MenuView) ViewInit() *qt.QWidget {
+	container := qt.NewQWidget2()
+	container.SetObjectName("start_menu")
+
+	layout := qt.NewQVBoxLayout(container)
 	layout.SetContentsMargins(0, 50, 0, 0)
 	layout.SetObjectName("start_menu")
-	parent.SetLayout(layout.QLayout)
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
@@ -46,6 +48,8 @@ func (v *MenuView) ViewInit(parent *qt.QWidget) {
 		Title:     "Exit",
 		OnPressed: qt.QCoreApplication_Quit,
 	}))
+
+	return container
 }
 
 func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {

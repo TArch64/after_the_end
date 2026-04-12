@@ -20,13 +20,15 @@ func NewSaveView(save *model.GameSave) *SaveView {
 	}
 }
 
-func (v *SaveView) ViewInit(parent *qt.QWidget) {
-	parent.SetObjectName("saves_list_item")
-	parent.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
-	parent.SetStyleSheet(styled.S("#saves_list_item", styled.Card2))
+func (v *SaveView) ViewInit() *qt.QWidget {
+	container := qt.NewQWidget2()
+	container.SetObjectName("saves_list_item")
+	container.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
+	container.SetStyleSheet(styled.S("#saves_list_item", styled.Card2))
 
-	row := qt.NewQHBoxLayout(parent)
+	row := qt.NewQHBoxLayout(container)
 	row.AddWidget(v.renderInfoColumn())
+	return container
 }
 
 func (v *SaveView) renderInfoColumn() *qt.QWidget {

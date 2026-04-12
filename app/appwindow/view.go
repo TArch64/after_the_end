@@ -9,26 +9,23 @@ import (
 	"github.com/mappu/miqt/qt"
 )
 
-type WindowView struct {
+type View struct {
 	*backbone.StatelessView
 	window *qt.QMainWindow
 }
 
-func NewWindowView() *WindowView {
-	return &WindowView{
+func NewWindowView() *View {
+	return &View{
 		StatelessView: backbone.NewStatelessView(),
 	}
 }
 
-func (v *WindowView) ViewInit(_ *qt.QWidget) {
+func (v *View) ViewInit(_ *qt.QWidget) {
 	v.window = qt.NewQMainWindow2()
 	v.window.SetObjectName("main_window")
 	v.window.SetWindowTitle("AfterTheEnd")
 
-	centralWidget := qt.NewQWidget2()
-	centralWidget.SetObjectName("window_central")
-
-	v.MountToWidget(centralWidget, router.NewView(&router.Options{
+	centralWidget := v.Mount(router.NewView(&router.Options{
 		InitialRoute: router.RouteStart,
 
 		Routes: router.Routes{

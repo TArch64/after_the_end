@@ -5,10 +5,9 @@ import (
 )
 
 type View interface {
+	ViewInit() *qt.QWidget
 	ViewBeforeInit()
-	ViewInit(parent *qt.QWidget)
+	ViewAfterInit(widget *qt.QWidget)
 	ViewUpdate()
 	ViewDestroy()
-	Widget() *qt.QWidget
-	Layout() *qt.QLayout
 }

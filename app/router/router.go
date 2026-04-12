@@ -14,7 +14,7 @@ type View struct {
 	currentRoute  backbone.View
 	currentLayout *qt.QLayout
 	initialRoute  RouteName
-	parent        *qt.QWidget
+	container     *qt.QWidget
 }
 
 type Options struct {
@@ -30,10 +30,12 @@ func NewView(options *Options) *View {
 	}
 }
 
-func (v *View) ViewInit(parent *qt.QWidget) {
-	v.parent = parent
+func (v *View) ViewInit() *qt.QWidget {
+	v.container = qt.NewQWidget2()
+	v.container.SetObjectName("router_container")
 	v.renderRoute(v.initialRoute)
 	onPush = v.renderRoute
+	return v.container
 }
 
 func (v *View) renderRoute(name RouteName) {
@@ -51,13 +53,9 @@ func (v *View) renderRoute(name RouteName) {
 	}
 
 	v.currentRoute = newRoute
+	widget := v.Mount(v.currentRoute)
 
-	widget := qt.NewQWidget2()
-	widget.SetObjectName("router_container")
-	v.currentRoute.ViewBeforeInit()
-	v.currentRoute.ViewInit(widget)
-
-	cover := qt.NewQVBoxLayout(v.parent)
+	cover := qt.NewQVBoxLayout(v.container)
 	cover.SetObjectName("router_container")
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)

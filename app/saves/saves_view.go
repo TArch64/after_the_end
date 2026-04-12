@@ -10,7 +10,6 @@ import (
 
 type View struct {
 	*backbone.StatefullView[*Model]
-	layout *qt.QLayout
 }
 
 func NewView() *View {
@@ -19,11 +18,7 @@ func NewView() *View {
 	}
 }
 
-func (v *View) Layout() *qt.QLayout {
-	return v.layout
-}
-
-func (v *View) ViewInit(parent *qt.QWidget) {
+func (v *View) ViewInit() *qt.QWidget {
 	v.Model.Load()
 
 	widget := qt.NewQWidget2()
@@ -38,12 +33,7 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 	column.AddStretch()
 
 	widget.SetLayout(column.QLayout)
-
-	cover := qt.NewQVBoxLayout(parent)
-	cover.SetObjectName("start_window_cover")
-	cover.SetContentsMargins(0, 0, 0, 0)
-	cover.AddWidget(widget)
-	v.layout = cover.QLayout
+	return widget
 }
 
 func (v *View) renderContainer() *qt.QWidget {
@@ -88,7 +78,7 @@ func (v *View) renderList(scrollArea *qt.QScrollArea) *qt.QWidget {
 
 	column := qt.NewQVBoxLayout(widget)
 	for _, save := range v.Model.List {
-		column.AddWidget(v.MountForLayout(NewSaveView(save)))
+		column.AddWidget(v.Mount(NewSaveView(save)))
 	}
 
 	return widget
