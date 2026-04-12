@@ -1,6 +1,8 @@
 package saves
 
 import (
+	"log"
+
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -27,7 +29,6 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 	v.Model.Load()
 
 	widget := qt.NewQWidget2()
-	widget.SetStyleSheet(styled.Transparent)
 	widget.SetObjectName("saves")
 	widget.SetStyleSheet("background: url(:/images/background.jpg)")
 
@@ -48,29 +49,29 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 }
 
 func (v *View) renderContainer() *qt.QWidget {
+	screen := qt.QGuiApplication_PrimaryScreen().Geometry()
+	width := min(int(float32(screen.Width())*0.6), 1000)
+	height := min(int(float32(screen.Height())*0.6), 1000)
+
+	log.Printf("screen width: %v, height: %v", width, height)
+
 	widget := qt.NewQWidget2()
-	widget.SetStyleSheet(styled.Transparent)
+	widget.SetStyleSheet(styled.Reset)
 	widget.SetObjectName("saves_container")
 
-	screen := qt.QGuiApplication_PrimaryScreen().Geometry()
-	width := min(float32(screen.Width())*0.6, 1000)
-	widget.SetFixedWidth(int(width))
-
 	layout := qt.NewQVBoxLayout(widget)
-	widget.SetStyleSheet(styled.Transparent)
 	layout.SetObjectName("saves_container")
 	layout.AddStretch()
 	layout.AddWidget(v.renderTitle())
 
 	scrollArea := qt.NewQScrollArea2()
 	scrollArea.SetObjectName("saves_scroll")
+	scrollArea.SetFixedSize2(width, height)
+	scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Card))
+	scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
+	scrollArea.SetWidget(v.renderList(scrollArea))
 
-	height := min(float32(screen.Height())*0.6, 1000)
-	scrollArea.SetFixedHeight(int(height))
-	scrollArea.SetStyleSheet(styled.Card)
-	scrollArea.SetLayout(v.renderList())
 	layout.AddWidget(scrollArea.QWidget)
-
 	layout.AddWidget(v.renderBackButton())
 	layout.AddStretch()
 	return widget
@@ -84,14 +85,17 @@ func (v *View) renderTitle() *qt.QWidget {
 	return title.QWidget
 }
 
-func (v *View) renderList() *qt.QLayout {
-	column := qt.NewQVBoxLayout2()
+func (v *View) renderList(scrollArea *qt.QScrollArea) *qt.QWidget {
+	widget := qt.NewQWidget2()
+	widget.SetStyleSheet(styled.Reset)
+	widget.SetFixedWidth(scrollArea.Width() - scrollArea.VerticalScrollBar().Width())
 
+	column := qt.NewQVBoxLayout(widget)
 	for _, save := range v.Model.List {
-		v.MountToLayout(column.QLayout, NewSaveView(save))
+		column.AddWidget(v.MountForLayout(NewSaveView(save)))
 	}
 
-	return column.QLayout
+	return widget
 }
 
 func (v *View) renderBackButton() *qt.QWidget {

@@ -20,12 +20,12 @@ func (b *StatelessView) MountToWidget(parent *qt.QWidget, view View) {
 	b.children = append(b.children, view)
 }
 
-func (b *StatelessView) MountToLayout(layout *qt.QLayout, view View) {
+func (b *StatelessView) MountForLayout(view View) *qt.QWidget {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("mount_layout")
-	widget.SetStyleSheet(styled.Transparent)
+	widget.SetStyleSheet(styled.Reset)
 	b.MountToWidget(widget, view)
-	layout.AddWidget(widget)
+	return widget
 }
 
 func (b *StatelessView) ViewBeforeInit() {}

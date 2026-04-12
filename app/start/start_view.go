@@ -44,7 +44,7 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 func (v *View) renderAside() *qt.QWidget {
 	widget := qt.NewQWidget2()
 	widget.SetObjectName("aside")
-	widget.SetStyleSheet(styled.Transparent)
+	widget.SetStyleSheet(styled.Reset)
 
 	layout := qt.NewQVBoxLayout2()
 	layout.SetObjectName("aside")
@@ -52,7 +52,7 @@ func (v *View) renderAside() *qt.QWidget {
 
 	layout.AddStretch()
 	layout.AddWidget(v.renderTitle())
-	v.MountToLayout(layout.QLayout, NewMenuView())
+	layout.AddWidget(v.MountForLayout(NewMenuView()))
 	layout.AddStretch()
 
 	widget.SetLayout(layout.QLayout)

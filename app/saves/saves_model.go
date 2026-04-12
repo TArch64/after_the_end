@@ -24,6 +24,7 @@ func (v *Model) Load() {
 	err := db.DB().
 		NewSelect().
 		Model(&v.List).
+		Order("created_at desc").
 		Scan(v.Ctx)
 
 	if err != nil {

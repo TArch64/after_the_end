@@ -6,18 +6,19 @@ import (
 
 const Title1 = `
 color: #fff;
-font-size: 80px;
-background: transparent;`
+font-size: 80px;` + Reset
 
 const Title2 = `
 color: #fff;
-font-size: 60px;
-background: transparent;`
+font-size: 60px;` + Reset
 
 const BodyWhite = `
-color: #fff;
-font-size: 20px;
-background: transparent;`
+color: #444;
+font-size: 20px;` + Reset
+
+const BodyWhite2 = `
+color: #888;
+font-size: 18px;` + Reset
 
 func TitleShadow() *qt.QGraphicsEffect {
 	glow := qt.NewQGraphicsDropShadowEffect()

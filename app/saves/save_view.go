@@ -11,22 +11,37 @@ import (
 )
 
 type SaveView struct {
-	*backbone.StatelessView
-	gameSave *model.GameSave
+	*backbone.StatefullView[*SaveModel]
 }
 
 func NewSaveView(save *model.GameSave) *SaveView {
 	return &SaveView{
-		StatelessView: backbone.NewStatelessView(),
-		gameSave:      save,
+		StatefullView: backbone.NewStatefullView(NewSaveModel(save)),
 	}
 }
 
 func (v *SaveView) ViewInit(parent *qt.QWidget) {
-	parent.SetStyleSheet(styled.ListItem)
-	column := qt.NewQVBoxLayout(parent)
+	parent.SetObjectName("saves_list_item")
+	parent.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
+	parent.SetStyleSheet(styled.S("#saves_list_item", styled.Card2))
 
-	title := qt.NewQLabel3(fmt.Sprintf("Save #%d", v.gameSave.ID))
+	row := qt.NewQHBoxLayout(parent)
+	row.AddWidget(v.renderInfoColumn())
+}
+
+func (v *SaveView) renderInfoColumn() *qt.QWidget {
+	widget := qt.NewQWidget2()
+	column := qt.NewQVBoxLayout(widget)
+
+	title := qt.NewQLabel3(fmt.Sprintf("Save #%d", v.Model.GameSave.ID))
 	title.SetStyleSheet(styled.BodyWhite)
 	column.AddWidget(title.QWidget)
+
+	column.AddStretch()
+
+	updatedAt := qt.NewQLabel3(v.Model.FormatUpdatedAt())
+	updatedAt.SetStyleSheet(styled.BodyWhite2)
+	column.AddWidget(updatedAt.QWidget)
+
+	return widget
 }
