@@ -1,24 +1,44 @@
 package backbone
 
 import (
+	"after_the_end/helper/uniqid"
+
 	"github.com/mappu/miqt/qt"
 )
 
+var idFactory = uniqid.New()
+
 type StatelessView struct {
-	children []View
+	children map[uniqid.ID]View
 	root     *qt.QWidget
+	id       uniqid.ID
 }
 
 func NewStatelessView() *StatelessView {
-	return &StatelessView{}
+	return &StatelessView{
+		id: idFactory.Next(),
+	}
+}
+
+func (b *StatelessView) ViewID() uniqid.ID {
+	return b.id
 }
 
 func (b *StatelessView) Mount(view View) *qt.QWidget {
+	if b.children == nil {
+		b.children = make(map[uniqid.ID]View)
+	}
+
 	view.ViewBeforeInit()
 	widget := view.ViewInit()
-	b.children = append(b.children, view)
+	b.children[view.ViewID()] = view
 	view.ViewAfterInit(widget)
 	return widget
+}
+
+func (b *StatelessView) Unmount(view View) {
+	view.ViewDestroy()
+	delete(b.children, view.ViewID())
 }
 
 func (b *StatelessView) ViewBeforeInit() {}

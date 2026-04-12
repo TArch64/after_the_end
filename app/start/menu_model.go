@@ -45,7 +45,9 @@ func (m *MenuModel) NewGame() {
 		Model(save).
 		Exec(m.Ctx)
 
-	if err != nil {
+	if err == nil {
+		m.SavesCount++
+	} else {
 		slog.Error("failed to create new game save",
 			logs.AttrError(err),
 		)

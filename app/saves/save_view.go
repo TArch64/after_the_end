@@ -10,13 +10,29 @@ import (
 	"github.com/mappu/miqt/qt"
 )
 
-type SaveView struct {
-	*backbone.StatefullView[*SaveModel]
+type SaveAction struct {
+	Name      string
+	Icon      *qt.QIcon
+	OnPressed func()
 }
 
-func NewSaveView(save *model.GameSave) *SaveView {
+type SaveView struct {
+	*backbone.StatefullView[*SaveModel]
+	onDeleted func()
+}
+
+type SaveViewOptions struct {
+	SavesModel *Model
+	GameSave   *model.GameSave
+	OnDeleted  func()
+}
+
+func NewSaveView(options *SaveViewOptions) *SaveView {
 	return &SaveView{
-		StatefullView: backbone.NewStatefullView(NewSaveModel(save)),
+		StatefullView: backbone.NewStatefullView(
+			NewSaveModel(options.SavesModel, options.GameSave),
+		),
+		onDeleted: options.OnDeleted,
 	}
 }
 
@@ -27,23 +43,48 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 	container.SetStyleSheet(styled.S("#saves_list_item", styled.Card2))
 
 	row := qt.NewQHBoxLayout(container)
+	row.SetContentsMargins(0, 0, 24, 0)
 	row.AddWidget(v.renderInfoColumn())
+	row.AddStretch()
+
+	row.AddWidget(v.renderAction(&SaveAction{
+		Name:      "save_delete",
+		Icon:      qt.NewQIcon4(":/icons/trash-main.svg"),
+		OnPressed: v.onDeleted,
+	}))
+
 	return container
 }
 
 func (v *SaveView) renderInfoColumn() *qt.QWidget {
 	widget := qt.NewQWidget2()
+	widget.SetObjectName("save_info")
+
 	column := qt.NewQVBoxLayout(widget)
+	column.SetObjectName("save_info")
 
 	title := qt.NewQLabel3(fmt.Sprintf("Save #%d", v.Model.GameSave.ID))
-	title.SetStyleSheet(styled.BodyWhite)
+	title.SetObjectName("save_title")
+	title.SetStyleSheet(styled.Body)
 	column.AddWidget(title.QWidget)
 
 	column.AddStretch()
 
 	updatedAt := qt.NewQLabel3(v.Model.FormatUpdatedAt())
-	updatedAt.SetStyleSheet(styled.BodyWhite2)
+	updatedAt.SetObjectName("save_updated_at")
+	updatedAt.SetStyleSheet(styled.Body2)
 	column.AddWidget(updatedAt.QWidget)
 
 	return widget
+}
+
+func (v *SaveView) renderAction(action *SaveAction) *qt.QWidget {
+	button := qt.NewQPushButton2()
+	button.SetObjectName(action.Name)
+	button.SetIcon(action.Icon)
+	button.SetIconSize(qt.NewQSize2(32, 32))
+	button.SetFixedSize2(40, 40)
+	button.SetStyleSheet(styled.ButtonIconSecondary)
+	button.OnReleased(action.OnPressed)
+	return button.QWidget
 }

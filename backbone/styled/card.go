@@ -24,6 +24,9 @@ const CardScrollBar = `
 QScrollBar {
 	background: transparent;
 }
+QScrollBar {
+  width: 20px;
+}
 QScrollBar::handle {
 	background: #ddd;
 	border: 3px solid #fff;

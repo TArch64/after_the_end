@@ -8,12 +8,14 @@ import (
 
 type SaveModel struct {
 	*backbone.BaseModel
+	parent   *Model
 	GameSave *model.GameSave
 }
 
-func NewSaveModel(gameSave *model.GameSave) *SaveModel {
+func NewSaveModel(parent *Model, gameSave *model.GameSave) *SaveModel {
 	return &SaveModel{
 		BaseModel: backbone.NewBaseModel(),
+		parent:    parent,
 		GameSave:  gameSave,
 	}
 }

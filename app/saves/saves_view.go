@@ -4,12 +4,16 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
+	"after_the_end/db/model"
 
 	"github.com/mappu/miqt/qt"
 )
 
 type View struct {
 	*backbone.StatefullView[*Model]
+	scrollArea     *qt.QScrollArea
+	scrollBarWidth int
+	list           *ListView
 }
 
 func NewView() *View {
@@ -49,14 +53,14 @@ func (v *View) renderContainer() *qt.QWidget {
 	layout.AddStretch()
 	layout.AddWidget(v.renderTitle())
 
-	scrollArea := qt.NewQScrollArea2()
-	scrollArea.SetObjectName("saves_scroll")
-	scrollArea.SetFixedSize2(width, height)
-	scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Card))
-	scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
-	scrollArea.SetWidget(v.renderList(scrollArea))
+	v.scrollArea = qt.NewQScrollArea2()
+	v.scrollArea.SetObjectName("saves_scroll")
+	v.scrollArea.SetFixedSize2(width, height)
+	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Card))
+	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
+	v.scrollArea.SetWidget(v.renderList())
 
-	layout.AddWidget(scrollArea.QWidget)
+	layout.AddWidget(v.scrollArea.QWidget)
 	layout.AddWidget(v.renderBackButton())
 	layout.AddStretch()
 	return widget
@@ -70,17 +74,18 @@ func (v *View) renderTitle() *qt.QWidget {
 	return title.QWidget
 }
 
-func (v *View) renderList(scrollArea *qt.QScrollArea) *qt.QWidget {
-	widget := qt.NewQWidget2()
-	widget.SetObjectName("saves_list")
-	widget.SetStyleSheet(styled.S("#saves_list", styled.Transparent))
-	widget.SetFixedWidth(scrollArea.Width() - scrollArea.VerticalScrollBar().Width())
-
-	column := qt.NewQVBoxLayout(widget)
-	for _, save := range v.Model.List {
-		column.AddWidget(v.Mount(NewSaveView(save)))
+func (v *View) renderList() *qt.QWidget {
+	if v.scrollBarWidth == 0 {
+		v.scrollBarWidth = v.scrollArea.VerticalScrollBar().Width()
 	}
 
+	v.list = NewListView(&ListViewOptions{
+		GameSaves: v.Model.List,
+		OnDelete:  v.deleteSave,
+	})
+
+	widget := v.Mount(v.list)
+	widget.SetFixedWidth(v.scrollArea.Width() - v.scrollBarWidth)
 	return widget
 }
 
@@ -93,4 +98,15 @@ func (v *View) renderBackButton() *qt.QWidget {
 	})
 
 	return button.QWidget
+}
+
+func (v *View) deleteSave(gameSave *model.GameSave) {
+	if v.Model.Delete(gameSave) {
+		v.ViewUpdate()
+	}
+}
+
+func (v *View) ViewUpdate() {
+	v.Unmount(v.list)
+	v.scrollArea.SetWidget(v.renderList())
 }

@@ -22,3 +22,21 @@ QPushButton:pressed {
 	border-right-color: #fff;
 	border-bottom-color: #fff;
 }`
+
+const ButtonIconSecondary = `
+QPushButton {
+	background: #ddd;
+	border: none;
+	color: #888;
+	padding: 6px;
+}
+QPushButton:hover {
+	background: #eee;
+	color: #444;
+	border: 2px solid #fff;
+	border-right-color: #aaa;
+	border-bottom-color: #aaa;
+}
+QPushButton:pressed {
+	background: #d5d5d5;
+}`

@@ -5,6 +5,7 @@
 
   <qresource prefix="/">
     <file>icons/back-main.svg</file>
+    <file>icons/trash-main.svg</file>
   </qresource>
 
   <qresource prefix="/">

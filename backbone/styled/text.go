@@ -12,11 +12,11 @@ const Title2 = `
 color: #fff;
 font-size: 60px;`
 
-const BodyWhite = `
+const Body = `
 color: #444;
 font-size: 20px;`
 
-const BodyWhite2 = `
+const Body2 = `
 color: #888;
 font-size: 18px;`
 
