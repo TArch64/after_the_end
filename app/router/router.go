@@ -9,7 +9,7 @@ import (
 )
 
 type View struct {
-	*backbone.BaseView
+	*backbone.StatelessView
 	routes        Routes
 	currentRoute  backbone.View
 	currentLayout *qt.QLayout
@@ -24,9 +24,9 @@ type Options struct {
 
 func NewView(options *Options) *View {
 	return &View{
-		BaseView:     backbone.NewBaseView(),
-		routes:       options.Routes,
-		initialRoute: options.InitialRoute,
+		StatelessView: backbone.NewStatelessView(),
+		routes:        options.Routes,
+		initialRoute:  options.InitialRoute,
 	}
 }
 

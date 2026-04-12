@@ -8,13 +8,13 @@ import (
 )
 
 type View struct {
-	*backbone.BaseView
+	*backbone.StatelessView
 	layout *qt.QLayout
 }
 
 func NewView() *View {
 	return &View{
-		BaseView: backbone.NewBaseView(),
+		StatelessView: backbone.NewStatelessView(),
 	}
 }
 

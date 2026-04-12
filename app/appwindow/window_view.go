@@ -10,13 +10,13 @@ import (
 )
 
 type WindowView struct {
-	*backbone.BaseView
+	*backbone.StatelessView
 	window *qt.QMainWindow
 }
 
 func NewWindowView() *WindowView {
 	return &WindowView{
-		BaseView: backbone.NewBaseView(),
+		StatelessView: backbone.NewStatelessView(),
 	}
 }
 

@@ -11,14 +11,14 @@ import (
 )
 
 type SaveView struct {
-	*backbone.BaseView
+	*backbone.StatelessView
 	gameSave *model.GameSave
 }
 
 func NewSaveView(save *model.GameSave) *SaveView {
 	return &SaveView{
-		BaseView: backbone.NewBaseView(),
-		gameSave: save,
+		StatelessView: backbone.NewStatelessView(),
+		gameSave:      save,
 	}
 }
 

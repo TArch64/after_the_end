@@ -1,27 +1,21 @@
 package saves
 
 import (
-	"log/slog"
-
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
-	"after_the_end/db"
-	"after_the_end/db/model"
-	"after_the_end/logs"
 
 	"github.com/mappu/miqt/qt"
 )
 
 type View struct {
-	*backbone.BaseView
+	*backbone.StatefullView[*Model]
 	layout *qt.QLayout
-	saves  []*model.GameSave
 }
 
 func NewView() *View {
 	return &View{
-		BaseView: backbone.NewBaseView(),
+		StatefullView: backbone.NewStatefullView(NewModel()),
 	}
 }
 
@@ -30,7 +24,7 @@ func (v *View) Layout() *qt.QLayout {
 }
 
 func (v *View) ViewInit(parent *qt.QWidget) {
-	v.fetch()
+	v.Model.Load()
 
 	widget := qt.NewQWidget2()
 	widget.SetStyleSheet(styled.Transparent)
@@ -51,19 +45,6 @@ func (v *View) ViewInit(parent *qt.QWidget) {
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)
 	v.layout = cover.QLayout
-}
-
-func (v *View) fetch() {
-	err := db.DB().
-		NewSelect().
-		Model(&v.saves).
-		Scan(v.Ctx)
-
-	if err != nil {
-		slog.Error("failed to fetch saves",
-			logs.AttrError(err),
-		)
-	}
 }
 
 func (v *View) renderContainer() *qt.QWidget {
@@ -106,7 +87,7 @@ func (v *View) renderTitle() *qt.QWidget {
 func (v *View) renderList() *qt.QLayout {
 	column := qt.NewQVBoxLayout2()
 
-	for _, save := range v.saves {
+	for _, save := range v.Model.List {
 		v.MountToLayout(column.QLayout, NewSaveView(save))
 	}
 

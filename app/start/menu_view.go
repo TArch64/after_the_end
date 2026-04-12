@@ -1,20 +1,15 @@
 package start
 
 import (
-	"log/slog"
-
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
-	"after_the_end/db"
-	"after_the_end/db/model"
-	"after_the_end/logs"
 
 	"github.com/mappu/miqt/qt"
 )
 
 type MenuView struct {
-	*backbone.BaseView
+	*backbone.StatefullView[*MenuModel]
 }
 
 type MenuItem struct {
@@ -24,7 +19,7 @@ type MenuItem struct {
 
 func NewMenuView() *MenuView {
 	return &MenuView{
-		BaseView: backbone.NewBaseView(),
+		StatefullView: backbone.NewStatefullView(NewMenuModel()),
 	}
 }
 
@@ -36,7 +31,7 @@ func (v *MenuView) ViewInit(parent *qt.QWidget) {
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
-		OnPressed: v.newGame,
+		OnPressed: v.Model.NewGame,
 	}))
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
@@ -58,38 +53,4 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 	button.OnReleased(item.OnPressed)
 	button.SetStyleSheet(styled.Button)
 	return button.QWidget
-}
-
-func (v *MenuView) newGame() {
-	savesCount, err := db.DB().
-		NewSelect().
-		Model((*model.GameSave)(nil)).
-		Count(v.Ctx)
-
-	if err != nil {
-		slog.Error("failed to create new game save",
-			logs.AttrError(err),
-		)
-		return
-	}
-
-	save := &model.GameSave{
-		Position: uint8(savesCount),
-	}
-
-	_, err = db.DB().
-		NewInsert().
-		Model(save).
-		Exec(v.Ctx)
-
-	if err != nil {
-		slog.Error("failed to create new game save",
-			logs.AttrError(err),
-		)
-		return
-	}
-
-	slog.Info("successfully created new game save",
-		slog.Uint64("save_id", uint64(save.ID)),
-	)
 }
