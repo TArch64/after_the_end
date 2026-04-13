@@ -36,13 +36,15 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 		OnPressed: v.Model.NewGame,
 	}))
 
-	layout.AddWidget(v.renderMenuItem(&MenuItem{
-		Title: "Load Game",
+	if v.Model.SavesCount != 0 {
+		layout.AddWidget(v.renderMenuItem(&MenuItem{
+			Title: "Load Game",
 
-		OnPressed: func() {
-			router.Push(router.RouteSaves)
-		},
-	}))
+			OnPressed: func() {
+				router.Push(router.RouteSaves)
+			},
+		}))
+	}
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "Exit",
