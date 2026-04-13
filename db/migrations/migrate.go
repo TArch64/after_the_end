@@ -7,11 +7,19 @@ import (
 	"github.com/uptrace/bun/migrate"
 )
 
+var migrationFuncs = []func(migrations *migrate.Migrations) error{
+	v1AddGameSavesTable,
+	v2AddCharactersTable,
+	v3AddGameSaveState,
+}
+
 func Up(db *bun.DB) (err error) {
 	migrations := migrate.NewMigrations()
-
-	v1AddGameSavesTable(migrations)
-	v2AddGameSavePosition(migrations)
+	for _, register := range migrationFuncs {
+		if err = register(migrations); err != nil {
+			return err
+		}
+	}
 
 	ctx := context.Background()
 	migrator := migrate.NewMigrator(db, migrations)

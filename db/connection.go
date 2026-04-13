@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
+	"time"
 
 	"after_the_end/db/migrations"
 
@@ -60,6 +61,11 @@ func openConnection(path string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sqlDB.SetMaxOpenConns(25)
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
+	sqlDB.SetConnMaxIdleTime(5 * time.Minute)
 
 	slog.Info("connected to database",
 		slog.String("path", path),
