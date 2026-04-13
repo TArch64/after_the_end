@@ -1,12 +1,11 @@
 package start
 
 import (
-	"log/slog"
+	"fmt"
 
 	"after_the_end/backbone"
 	"after_the_end/db"
 	"after_the_end/db/model"
-	"after_the_end/logs"
 )
 
 type MenuModel struct {
@@ -20,24 +19,24 @@ func NewMenuModel() *MenuModel {
 	}
 }
 
-func (m *MenuModel) CountSaves() {
+func (m *MenuModel) CountSaves() error {
 	savesCount, err := db.DB().
 		NewSelect().
 		Model((*model.GameSave)(nil)).
 		Count(m.Ctx)
 
 	if err != nil {
-		slog.Error("failed to count game saves",
-			logs.AttrError(err),
-		)
+		return fmt.Errorf("failed to count saves: %w", err)
 	}
 
 	m.SavesCount = uint8(savesCount)
+	return nil
 }
 
-func (m *MenuModel) NewGame() {
+func (m *MenuModel) NewGame() error {
 	save := &model.GameSave{
 		Position: m.SavesCount,
+		State:    model.GameSaveCreateMainCharacter,
 	}
 
 	_, err := db.DB().
@@ -45,11 +44,10 @@ func (m *MenuModel) NewGame() {
 		Model(save).
 		Exec(m.Ctx)
 
-	if err == nil {
-		m.SavesCount++
-	} else {
-		slog.Error("failed to create new game save",
-			logs.AttrError(err),
-		)
+	if err != nil {
+		return fmt.Errorf("failed to create new game save: %w", err)
 	}
+
+	m.SavesCount++
+	return nil
 }

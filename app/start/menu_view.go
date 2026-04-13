@@ -1,6 +1,7 @@
 package start
 
 import (
+	"after_the_end/app/dialog/errorreport"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -27,13 +28,18 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 	container := qt.NewQWidget2()
 	container.SetObjectName("start_menu")
 
+	if err := v.Model.CountSaves(); err != nil {
+		errorreport.Show(container, err)
+		return container
+	}
+
 	layout := qt.NewQVBoxLayout(container)
 	layout.SetContentsMargins(0, 50, 0, 0)
 	layout.SetObjectName("start_menu")
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
-		OnPressed: v.Model.NewGame,
+		OnPressed: v.createNewGame,
 	}))
 
 	if v.Model.SavesCount != 0 {
@@ -59,4 +65,10 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 	button.OnReleased(item.OnPressed)
 	button.SetStyleSheet(styled.Button)
 	return button.QWidget
+}
+
+func (v *MenuView) createNewGame() {
+	if err := v.Model.NewGame(); err != nil {
+		errorreport.Show(v.Root, err)
+	}
 }

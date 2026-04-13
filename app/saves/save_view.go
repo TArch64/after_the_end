@@ -1,7 +1,7 @@
 package saves
 
 import (
-	"after_the_end/app/confirm"
+	"after_the_end/app/dialog/confirm"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 	"after_the_end/db/model"

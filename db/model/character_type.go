@@ -3,34 +3,35 @@ package model
 import (
 	"database/sql"
 	"database/sql/driver"
-	"errors"
+	"fmt"
 )
 
-type CharacterType uint8
+type CharacterType string
 
 const (
-	CharacterMain CharacterType = iota
-	CharacterNPC
+	CharacterMain CharacterType = "Main"
+	CharacterNPC                = "NPC"
 )
 
+var characterTypeVariants = []CharacterType{
+	CharacterMain,
+	CharacterNPC,
+}
+
 var _ sql.Scanner = (*CharacterType)(nil)
+var _ driver.Valuer = (*CharacterType)(nil)
 
-func (m *CharacterType) Scan(value any) error {
-	if num, ok := value.(int64); ok && m.validateInt(num) {
-		*m = CharacterType(num)
-		return nil
+func (m *CharacterType) Scan(value any) (err error) {
+	if *m, err = scanEnum(value, characterTypeVariants); err != nil {
+		return fmt.Errorf("failed to scan CharacterType: %w", err)
 	}
-	return errors.New("scan: invalid CharacterType")
+	return nil
 }
 
-func (m CharacterType) Value() (driver.Value, error) {
-	if num := int64(m); m.validateInt(num) {
-		return num, nil
+func (m *CharacterType) Value() (driver.Value, error) {
+	value, err := valueEnum(*m, characterTypeVariants)
+	if err != nil {
+		return nil, fmt.Errorf("failed to value CharacterType: %w", err)
 	}
-	return nil, errors.New("value: invalid CharacterType")
-}
-
-func (m CharacterType) validateInt(num int64) bool {
-	value := CharacterType(num)
-	return value == CharacterNPC || value == CharacterMain
+	return value, nil
 }

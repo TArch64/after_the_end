@@ -20,16 +20,15 @@ func Up(db *bun.DB) (err error) {
 			return err
 		}
 	}
-
 	ctx := context.Background()
-	migrator := migrate.NewMigrator(db, migrations)
+	migrator := migrate.NewMigrator(db, migrations,
+		migrate.WithMarkAppliedOnSuccess(true),
+	)
 	if err = migrator.Init(ctx); err != nil {
 		return err
 	}
-
 	if _, err = migrator.Migrate(ctx); err != nil {
 		return err
 	}
-
 	return nil
 }

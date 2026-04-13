@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"os"
 	"path/filepath"
-	"time"
 
 	"after_the_end/db/migrations"
 
@@ -62,10 +61,17 @@ func openConnection(path string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	sqlDB.SetMaxOpenConns(25)
-	sqlDB.SetMaxIdleConns(10)
-	sqlDB.SetConnMaxLifetime(5 * time.Minute)
-	sqlDB.SetConnMaxIdleTime(5 * time.Minute)
+	sqlDB.SetMaxOpenConns(1)
+	sqlDB.SetMaxIdleConns(1)
+	sqlDB.SetConnMaxLifetime(0)
+
+	if err = sqlDB.Ping(); err != nil {
+		return nil, err
+	}
+
+	if _, err = sqlDB.Exec("PRAGMA foreign_keys = ON"); err != nil {
+		return nil, err
+	}
 
 	slog.Info("connected to database",
 		slog.String("path", path),

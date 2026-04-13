@@ -2,6 +2,7 @@ package saves
 
 import (
 	"after_the_end/app/components/backroundimage"
+	"after_the_end/app/dialog/errorreport"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -24,14 +25,17 @@ func NewView() *View {
 }
 
 func (v *View) ViewInit() *qt.QWidget {
-	v.Model.Load()
-
 	widget := backroundimage.New(&backroundimage.Options{
 		Src:          ":/images/background.jpg",
 		OverlayColor: "rgba(0, 0, 0, 0.6)",
 	})
 
 	widget.SetObjectName("saves")
+
+	if err := v.Model.Load(); err != nil {
+		errorreport.Show(widget.QWidget, err)
+		return widget.QWidget
+	}
 
 	column := qt.NewQVBoxLayout2()
 	column.SetObjectName("saves_column")
@@ -104,9 +108,12 @@ func (v *View) renderBackButton() *qt.QWidget {
 }
 
 func (v *View) deleteSave(gameSave *model.GameSave) {
-	if v.Model.Delete(gameSave) {
-		v.ViewUpdate()
+	if err := v.Model.Delete(gameSave); err != nil {
+		errorreport.Show(v.Root, err)
+		return
 	}
+
+	v.ViewUpdate()
 }
 
 func (v *View) ViewUpdate() {

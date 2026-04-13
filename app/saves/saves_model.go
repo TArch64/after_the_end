@@ -1,13 +1,12 @@
 package saves
 
 import (
-	"log/slog"
+	"fmt"
 	"slices"
 
 	"after_the_end/backbone"
 	"after_the_end/db"
 	"after_the_end/db/model"
-	"after_the_end/logs"
 )
 
 type Model struct {
@@ -21,7 +20,7 @@ func NewModel() *Model {
 	}
 }
 
-func (m *Model) Load() {
+func (m *Model) Load() error {
 	err := db.DB().
 		NewSelect().
 		Model(&m.List).
@@ -29,13 +28,13 @@ func (m *Model) Load() {
 		Scan(m.Ctx)
 
 	if err != nil {
-		slog.Error("failed to load saves",
-			logs.AttrError(err),
-		)
+		return fmt.Errorf("failed to load saves: %w", err)
 	}
+
+	return nil
 }
 
-func (m *Model) Delete(deletingSave *model.GameSave) bool {
+func (m *Model) Delete(deletingSave *model.GameSave) error {
 	_, err := db.DB().
 		NewDelete().
 		Model(deletingSave).
@@ -43,16 +42,12 @@ func (m *Model) Delete(deletingSave *model.GameSave) bool {
 		Exec(m.Ctx)
 
 	if err != nil {
-		slog.Error("failed to delete save",
-			logs.AttrError(err),
-		)
-
-		return false
+		return fmt.Errorf("failed to delete game save: %w", err)
 	}
 
 	m.List = slices.DeleteFunc(m.List, func(save *model.GameSave) bool {
 		return deletingSave.ID == save.ID
 	})
 
-	return true
+	return nil
 }
