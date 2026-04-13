@@ -1,6 +1,7 @@
 package saves
 
 import (
+	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -11,9 +12,9 @@ import (
 
 type View struct {
 	*backbone.StatefullView[*Model]
-	scrollArea     *qt.QScrollArea
-	scrollBarWidth int
-	list           *ListView
+	scrollArea *qt.QScrollArea
+	listWidth  int
+	list       *ListView
 }
 
 func NewView() *View {
@@ -25,9 +26,12 @@ func NewView() *View {
 func (v *View) ViewInit() *qt.QWidget {
 	v.Model.Load()
 
-	widget := qt.NewQWidget2()
+	widget := backroundimage.New(&backroundimage.Options{
+		Src:          ":/images/background.jpg",
+		OverlayColor: "rgba(0, 0, 0, 0.6)",
+	})
+
 	widget.SetObjectName("saves")
-	widget.SetStyleSheet("#saves { background: url(:/images/background.jpg) }")
 
 	column := qt.NewQVBoxLayout2()
 	column.SetObjectName("saves_column")
@@ -36,8 +40,8 @@ func (v *View) ViewInit() *qt.QWidget {
 	column.AddWidget3(v.renderContainer(), 0, qt.AlignCenter)
 	column.AddStretch()
 
-	widget.SetLayout(column.QLayout)
-	return widget
+	widget.Content.SetLayout(column.QLayout)
+	return widget.QWidget
 }
 
 func (v *View) renderContainer() *qt.QWidget {
@@ -56,8 +60,10 @@ func (v *View) renderContainer() *qt.QWidget {
 	v.scrollArea = qt.NewQScrollArea2()
 	v.scrollArea.SetObjectName("saves_scroll")
 	v.scrollArea.SetFixedSize2(width, height)
-	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Card))
+	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Transparent+"padding: 0"))
 	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
+
+	v.listWidth = v.scrollArea.Width() - 32
 	v.scrollArea.SetWidget(v.renderList())
 
 	layout.AddWidget(v.scrollArea.QWidget)
@@ -75,23 +81,20 @@ func (v *View) renderTitle() *qt.QWidget {
 }
 
 func (v *View) renderList() *qt.QWidget {
-	if v.scrollBarWidth == 0 {
-		v.scrollBarWidth = v.scrollArea.VerticalScrollBar().Width()
-	}
-
 	v.list = NewListView(&ListViewOptions{
 		GameSaves: v.Model.List,
 		OnDelete:  v.deleteSave,
 	})
 
 	widget := v.Mount(v.list)
-	widget.SetFixedWidth(v.scrollArea.Width() - v.scrollBarWidth)
+	widget.SetFixedWidth(v.listWidth)
 	return widget
 }
 
 func (v *View) renderBackButton() *qt.QWidget {
 	button := qt.NewQPushButton4(qt.NewQIcon4(":/icons/back-main.svg"), "Back")
 	button.SetStyleSheet(styled.Button)
+	button.SetFixedWidth(v.listWidth)
 
 	button.OnReleased(func() {
 		router.Push(router.RouteStart)

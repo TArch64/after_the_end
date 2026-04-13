@@ -1,6 +1,7 @@
 package start
 
 import (
+	"after_the_end/app/components/backroundimage"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
@@ -19,17 +20,19 @@ func NewView() *View {
 }
 
 func (v *View) ViewInit() *qt.QWidget {
-	widget := qt.NewQWidget2()
+	widget := backroundimage.New(&backroundimage.Options{
+		Src: ":/images/background.jpg",
+	})
+
 	widget.SetObjectName("start_window")
-	widget.SetStyleSheet("#start_window { background: url(:/images/background.jpg) }")
 
 	row := qt.NewQHBoxLayout2()
 	row.SetObjectName("start_window_row")
 	row.AddWidget3(v.renderAside(), 0, qt.AlignVCenter)
 	row.AddStretch()
 
-	widget.SetLayout(row.QLayout)
-	return widget
+	widget.Content.SetLayout(row.QLayout)
+	return widget.QWidget
 }
 
 func (v *View) renderAside() *qt.QWidget {

@@ -33,6 +33,8 @@ func (v *ListView) ViewInit() *qt.QWidget {
 	widget.SetStyleSheet(styled.S("#saves_list", styled.Transparent))
 
 	column := qt.NewQVBoxLayout(widget)
+	column.SetContentsMargins(0, 0, 0, 0)
+
 	for _, gameSave := range v.gameSaves {
 		view := NewSaveView(&SaveViewOptions{
 			GameSave: gameSave,
