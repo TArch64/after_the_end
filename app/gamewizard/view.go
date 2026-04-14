@@ -31,6 +31,7 @@ func (v *View) ViewInit() *qt.QWidget {
 		OverlayColor: "rgba(0, 0, 0, 0.6)",
 	})
 
+	widget.SetObjectName("wizard")
 	v.renderState(widget.QWidget)
 	widget.OnResizeEvent(v.onResize)
 
