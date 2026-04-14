@@ -21,8 +21,7 @@ func NewView() *View {
 }
 
 func (v *View) ViewBeforeOpen(params router.Params) error {
-	v.Model.Load(params["gameSave"].(*model.GameSave))
-	return nil
+	return v.Model.Load(params["gameSave"].(*model.GameSave))
 }
 
 func (v *View) ViewInit() *qt.QWidget {
@@ -45,8 +44,8 @@ func (v *View) ViewUpdate() {
 
 func (v *View) renderState(parent *qt.QWidget) {
 	switch v.Model.GameSave.State {
-	case model.GameSaveCreateMainCharacter:
-		v.state = NewCreateCharacterView(v.Model)
+	case model.GameSaveNew:
+		v.state = NewNameCharacterView(v.Model)
 	}
 
 	if v.state == nil {

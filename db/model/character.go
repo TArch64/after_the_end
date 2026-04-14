@@ -10,6 +10,7 @@ type Character struct {
 	bun.BaseModel `bun:"table:characters,alias:c"`
 	ID            ID            `bun:",pk,autoincrement"`
 	Type          CharacterType `bun:",notnull"`
+	Name          string        `bun:",notnull"`
 	SaveID        ID            `bun:",notnull"`
 	CreatedAt     time.Time     `bun:",notnull,default:current_timestamp"`
 	UpdatedAt     time.Time     `bun:",notnull,default:current_timestamp"`

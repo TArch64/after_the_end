@@ -4,7 +4,6 @@
   </qresource>
 
   <qresource prefix="/">
-    <file>icons/back-main.svg</file>
     <file>icons/trash-main.svg</file>
     <file>icons/resume-main.svg</file>
   </qresource>

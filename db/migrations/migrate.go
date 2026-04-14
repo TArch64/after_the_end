@@ -12,6 +12,7 @@ var migrationFuncs = []func(migrations *migrate.Migrations) error{
 	v2AddCharactersTable,
 	v3AddGameSaveState,
 	v4AddTimestampIndexes,
+	v5AddCharacterName,
 }
 
 func Up(db *bun.DB) (err error) {

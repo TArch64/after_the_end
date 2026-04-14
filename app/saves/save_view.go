@@ -13,7 +13,7 @@ import (
 type SaveAction struct {
 	Name      string
 	Icon      *qt.QIcon
-	OnPressed func()
+	OnClicked func()
 }
 
 type SaveView struct {
@@ -50,13 +50,13 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_load",
 		Icon:      qt.NewQIcon4(":/icons/resume-main.svg"),
-		OnPressed: v.resume,
+		OnClicked: v.resume,
 	}))
 
 	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_delete",
 		Icon:      qt.NewQIcon4(":/icons/trash-main.svg"),
-		OnPressed: v.delete,
+		OnClicked: v.delete,
 	}))
 
 	return container
@@ -91,7 +91,7 @@ func (v *SaveView) renderAction(action *SaveAction) *qt.QWidget {
 	button.SetIconSize(qt.NewQSize2(32, 32))
 	button.SetFixedSize2(40, 40)
 	button.SetStyleSheet(styled.ButtonIconSecondary)
-	button.OnReleased(action.OnPressed)
+	button.OnClicked(action.OnClicked)
 	return button.QWidget
 }
 

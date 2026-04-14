@@ -17,7 +17,7 @@ type MenuView struct {
 
 type MenuItem struct {
 	Title     string
-	OnPressed func()
+	OnClicked func()
 }
 
 func NewMenuView(model *Model) *MenuView {
@@ -37,19 +37,19 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
-		OnPressed: v.createNewGame,
+		OnClicked: v.createNewGame,
 	}))
 
 	if v.model.SavesCount != 0 {
 		layout.AddWidget(v.renderMenuItem(&MenuItem{
 			Title:     "Continue",
-			OnPressed: v.continueGame,
+			OnClicked: v.continueGame,
 		}))
 
 		layout.AddWidget(v.renderMenuItem(&MenuItem{
 			Title: "Load Game",
 
-			OnPressed: func() {
+			OnClicked: func() {
 				router.Push(router.RouteSaves)
 			},
 		}))
@@ -57,7 +57,7 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "Exit",
-		OnPressed: qt.QCoreApplication_Quit,
+		OnClicked: qt.QCoreApplication_Quit,
 	}))
 
 	return container
@@ -65,7 +65,7 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 
 func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 	button := qt.NewQPushButton3(item.Title)
-	button.OnReleased(item.OnPressed)
+	button.OnClicked(item.OnClicked)
 	button.SetStyleSheet(styled.Button)
 	return button.QWidget
 }

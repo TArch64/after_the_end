@@ -28,8 +28,8 @@ func (m *CharacterType) Scan(value any) (err error) {
 	return nil
 }
 
-func (m *CharacterType) Value() (driver.Value, error) {
-	value, err := valueEnum(*m, characterTypeVariants)
+func (m CharacterType) Value() (driver.Value, error) {
+	value, err := valueEnum(m, characterTypeVariants)
 	if err != nil {
 		return nil, fmt.Errorf("failed to value CharacterType: %w", err)
 	}

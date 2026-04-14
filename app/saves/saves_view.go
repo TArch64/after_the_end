@@ -95,11 +95,11 @@ func (v *View) renderList() *qt.QWidget {
 }
 
 func (v *View) renderBackButton() *qt.QWidget {
-	button := qt.NewQPushButton4(qt.NewQIcon4(":/icons/back-main.svg"), "Back")
+	button := qt.NewQPushButton3("Back")
 	button.SetStyleSheet(styled.Button)
 	button.SetFixedWidth(v.listWidth)
 
-	button.OnReleased(func() {
+	button.OnClicked(func() {
 		router.Push(router.RouteStart)
 	})
 

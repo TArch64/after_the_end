@@ -9,12 +9,12 @@ import (
 type GameSaveState string
 
 const (
-	GameSaveCreateMainCharacter GameSaveState = "CreateMainCharacter"
-	GameSaveReady               GameSaveState = "Ready"
+	GameSaveNew   GameSaveState = "New"
+	GameSaveReady GameSaveState = "Ready"
 )
 
 var gameSaveStateVariants = []GameSaveState{
-	GameSaveCreateMainCharacter,
+	GameSaveNew,
 	GameSaveReady,
 }
 
@@ -28,8 +28,8 @@ func (m *GameSaveState) Scan(value any) (err error) {
 	return nil
 }
 
-func (m *GameSaveState) Value() (driver.Value, error) {
-	value, err := valueEnum(*m, gameSaveStateVariants)
+func (m GameSaveState) Value() (driver.Value, error) {
+	value, err := valueEnum(m, gameSaveStateVariants)
 	if err != nil {
 		return nil, fmt.Errorf("failed to value GameSaveState: %w", err)
 	}

@@ -36,7 +36,7 @@ func (m *Model) Load() error {
 func (m *Model) NewGame() (*model.GameSave, error) {
 	gameSave := &model.GameSave{
 		Position: m.SavesCount,
-		State:    model.GameSaveCreateMainCharacter,
+		State:    model.GameSaveNew,
 	}
 
 	_, err := db.DB().
