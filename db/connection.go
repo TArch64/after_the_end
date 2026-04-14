@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
+	"net/url"
 	"os"
 	"path/filepath"
 
@@ -55,7 +56,10 @@ func getDatabasePath() (path string, err error) {
 }
 
 func openConnection(path string) (*sql.DB, error) {
-	dataSource := fmt.Sprintf("file:%s?cache=shared&mode=rwc", path)
+	params := url.Values{}
+	params.Set("cache", "shared")
+	params.Set("mode", "rwc")
+	dataSource := fmt.Sprintf("file:%s?%s", path, params.Encode())
 	sqlDB, err := sql.Open(sqliteshim.ShimName, dataSource)
 	if err != nil {
 		return nil, err
