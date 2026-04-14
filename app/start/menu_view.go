@@ -5,6 +5,7 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
+	"after_the_end/db/model"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -41,6 +42,11 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 
 	if v.model.SavesCount != 0 {
 		layout.AddWidget(v.renderMenuItem(&MenuItem{
+			Title:     "Continue",
+			OnPressed: v.continueGame,
+		}))
+
+		layout.AddWidget(v.renderMenuItem(&MenuItem{
 			Title: "Load Game",
 
 			OnPressed: func() {
@@ -73,4 +79,18 @@ func (v *MenuView) createNewGame() {
 	router.Push(router.RouteGameWizard, router.Params{
 		"gameSave": gameSave,
 	})
+}
+
+func (v *MenuView) continueGame() {
+	gameSave, err := v.model.GetLastGame()
+	if err != nil {
+		errorreport.Show(v.ViewRoot(), err)
+		return
+	}
+
+	if gameSave.State != model.GameSaveReady {
+		router.Push(router.RouteGameWizard, router.Params{
+			"gameSave": gameSave,
+		})
+	}
 }

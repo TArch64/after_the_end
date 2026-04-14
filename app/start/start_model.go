@@ -51,3 +51,20 @@ func (m *Model) NewGame() (*model.GameSave, error) {
 	m.SavesCount++
 	return gameSave, nil
 }
+
+func (m *Model) GetLastGame() (*model.GameSave, error) {
+	gameSave := &model.GameSave{}
+
+	err := db.DB().
+		NewSelect().
+		Model(gameSave).
+		Limit(1).
+		OrderExpr("updated_at DESC").
+		Scan(m.Ctx)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get last game save: %w", err)
+	}
+
+	return gameSave, nil
+}
