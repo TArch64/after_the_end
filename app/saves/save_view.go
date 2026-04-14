@@ -105,7 +105,7 @@ func (v *SaveView) resume() {
 
 func (v *SaveView) delete() {
 	confirmed := confirm.Show(&confirm.Options{
-		Parent: v.Root,
+		Parent: v.ViewRoot(),
 		Title:  v.Model.FormatTitle(),
 		Text:   "Are you sure you want to delete this save?",
 	})

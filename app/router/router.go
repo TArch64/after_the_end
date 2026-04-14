@@ -51,7 +51,7 @@ func (v *View) renderRoute(name Name, params Params) {
 	newRoute.ViewBeforeInit()
 
 	if err := newRoute.ViewBeforeOpen(params); err != nil {
-		errorreport.Show(v.Root, err)
+		errorreport.Show(v.ViewRoot(), err)
 		return
 	}
 

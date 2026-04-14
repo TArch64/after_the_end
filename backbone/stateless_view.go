@@ -11,7 +11,7 @@ var idFactory = uniqid.New()
 type StatelessView struct {
 	children map[uniqid.ID]View
 	id       uniqid.ID
-	Root     *qt.QWidget
+	root     *qt.QWidget
 }
 
 func NewStatelessView() *StatelessView {
@@ -22,6 +22,10 @@ func NewStatelessView() *StatelessView {
 
 func (b *StatelessView) ViewID() uniqid.ID {
 	return b.id
+}
+
+func (b *StatelessView) ViewRoot() *qt.QWidget {
+	return b.root
 }
 
 func (b *StatelessView) Mount(view View, manualBeforeInit ...bool) *qt.QWidget {
@@ -49,7 +53,7 @@ func (b *StatelessView) ViewBeforeInit() {}
 func (b *StatelessView) ViewUpdate() {}
 
 func (b *StatelessView) ViewAfterInit(widget *qt.QWidget) {
-	b.Root = widget
+	b.root = widget
 }
 
 func (b *StatelessView) ViewDestroy() {
@@ -58,6 +62,6 @@ func (b *StatelessView) ViewDestroy() {
 	}
 
 	b.children = nil
-	b.Root.DeleteLater()
-	b.Root = nil
+	b.root.DeleteLater()
+	b.root = nil
 }

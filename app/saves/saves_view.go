@@ -108,7 +108,7 @@ func (v *View) renderBackButton() *qt.QWidget {
 
 func (v *View) deleteSave(gameSave *model.GameSave) {
 	if err := v.Model.Delete(gameSave); err != nil {
-		errorreport.Show(v.Root, err)
+		errorreport.Show(v.ViewRoot(), err)
 		return
 	}
 

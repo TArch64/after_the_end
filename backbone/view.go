@@ -8,6 +8,7 @@ import (
 
 type View interface {
 	ViewID() uniqid.ID
+	ViewRoot() *qt.QWidget
 	ViewInit() *qt.QWidget
 	ViewBeforeInit()
 	ViewAfterInit(widget *qt.QWidget)

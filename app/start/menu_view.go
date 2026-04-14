@@ -67,7 +67,7 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 func (v *MenuView) createNewGame() {
 	gameSave, err := v.model.NewGame()
 	if err != nil {
-		errorreport.Show(v.Root, err)
+		errorreport.Show(v.ViewRoot(), err)
 	}
 
 	router.Push(router.RouteGameWizard, router.Params{

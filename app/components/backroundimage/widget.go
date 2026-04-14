@@ -11,6 +11,7 @@ type Widget struct {
 	src          string
 	overlayColor string
 	overlay      *qt.QWidget
+	onResize     func()
 	Content      *qt.QWidget
 }
 
@@ -49,10 +50,7 @@ func (w *Widget) render() {
 		w.renderContent(w.overlay)
 	}
 
-	w.OnResizeEvent(func(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
-		super(event)
-		w.onResize()
-	})
+	w.QWidget.OnResizeEvent(w.onResizeEvent)
 }
 
 func (w *Widget) renderOverlay() {
@@ -68,7 +66,12 @@ func (w *Widget) renderContent(container *qt.QWidget) {
 	w.Content.SetGeometryWithGeometry(container.Geometry())
 }
 
-func (w *Widget) onResize() {
+func (w *Widget) OnResizeEvent(handler func()) {
+	w.onResize = handler
+}
+
+func (w *Widget) onResizeEvent(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
+	super(event)
 	geometry := w.Geometry()
 
 	if w.overlay != nil {
@@ -76,4 +79,8 @@ func (w *Widget) onResize() {
 	}
 
 	w.Content.SetGeometryWithGeometry(geometry)
+
+	if w.onResize != nil {
+		w.onResize()
+	}
 }
