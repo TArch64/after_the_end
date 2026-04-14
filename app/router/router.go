@@ -3,6 +3,7 @@ package router
 import (
 	"log/slog"
 
+	"after_the_end/app/dialog/errorreport"
 	"after_the_end/backbone"
 
 	"github.com/mappu/miqt/qt"
@@ -13,12 +14,12 @@ type View struct {
 	routes        Routes
 	currentRoute  backbone.View
 	currentLayout *qt.QLayout
-	initialRoute  RouteName
+	initialRoute  Name
 	container     *qt.QWidget
 }
 
 type Options struct {
-	InitialRoute RouteName
+	InitialRoute Name
 	Routes       Routes
 }
 
@@ -33,17 +34,24 @@ func NewView(options *Options) *View {
 func (v *View) ViewInit() *qt.QWidget {
 	v.container = qt.NewQWidget2()
 	v.container.SetObjectName("router_container")
-	v.renderRoute(v.initialRoute)
+	v.renderRoute(v.initialRoute, nil)
 	onPush = v.renderRoute
 	return v.container
 }
 
-func (v *View) renderRoute(name RouteName) {
+func (v *View) renderRoute(name Name, params Params) {
 	newRoute, ok := v.routes[name]
 	if !ok {
 		slog.Error("unknown route",
 			slog.String("name", string(name)),
 		)
+		return
+	}
+
+	newRoute.ViewBeforeInit()
+
+	if err := newRoute.ViewBeforeOpen(params); err != nil {
+		errorreport.Show(v.Root, err)
 		return
 	}
 
@@ -53,7 +61,7 @@ func (v *View) renderRoute(name RouteName) {
 	}
 
 	v.currentRoute = newRoute
-	widget := v.Mount(v.currentRoute)
+	widget := v.Mount(v.currentRoute, true)
 
 	cover := qt.NewQVBoxLayout(v.container)
 	cover.SetObjectName("router_container")

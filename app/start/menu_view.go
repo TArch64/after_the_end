@@ -10,7 +10,8 @@ import (
 )
 
 type MenuView struct {
-	*backbone.StatefullView[*MenuModel]
+	*backbone.StatelessView
+	model *Model
 }
 
 type MenuItem struct {
@@ -18,20 +19,16 @@ type MenuItem struct {
 	OnPressed func()
 }
 
-func NewMenuView() *MenuView {
+func NewMenuView(model *Model) *MenuView {
 	return &MenuView{
-		StatefullView: backbone.NewStatefullView(NewMenuModel()),
+		StatelessView: backbone.NewStatelessView(),
+		model:         model,
 	}
 }
 
 func (v *MenuView) ViewInit() *qt.QWidget {
 	container := qt.NewQWidget2()
 	container.SetObjectName("start_menu")
-
-	if err := v.Model.CountSaves(); err != nil {
-		errorreport.Show(container, err)
-		return container
-	}
 
 	layout := qt.NewQVBoxLayout(container)
 	layout.SetContentsMargins(0, 50, 0, 0)
@@ -42,7 +39,7 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 		OnPressed: v.createNewGame,
 	}))
 
-	if v.Model.SavesCount != 0 {
+	if v.model.SavesCount != 0 {
 		layout.AddWidget(v.renderMenuItem(&MenuItem{
 			Title: "Load Game",
 
@@ -68,7 +65,12 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 }
 
 func (v *MenuView) createNewGame() {
-	if err := v.Model.NewGame(); err != nil {
+	gameSave, err := v.model.NewGame()
+	if err != nil {
 		errorreport.Show(v.Root, err)
 	}
+
+	router.Push(router.RouteGameWizard, router.Params{
+		"gameSave": gameSave,
+	})
 }

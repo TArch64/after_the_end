@@ -24,6 +24,10 @@ func NewView() *View {
 	}
 }
 
+func (v *View) ViewBeforeOpen(_ router.Params) error {
+	return v.Model.Load()
+}
+
 func (v *View) ViewInit() *qt.QWidget {
 	widget := backroundimage.New(&backroundimage.Options{
 		Src:          ":/images/background.jpg",
@@ -31,11 +35,6 @@ func (v *View) ViewInit() *qt.QWidget {
 	})
 
 	widget.SetObjectName("saves")
-
-	if err := v.Model.Load(); err != nil {
-		errorreport.Show(widget.QWidget, err)
-		return widget.QWidget
-	}
 
 	column := qt.NewQVBoxLayout2()
 	column.SetObjectName("saves_column")

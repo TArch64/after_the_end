@@ -2,6 +2,7 @@ package saves
 
 import (
 	"after_the_end/app/dialog/confirm"
+	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
@@ -47,6 +48,12 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 	row.AddStretch()
 
 	row.AddWidget(v.renderAction(&SaveAction{
+		Name:      "save_load",
+		Icon:      qt.NewQIcon4(":/icons/resume-main.svg"),
+		OnPressed: v.resume,
+	}))
+
+	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_delete",
 		Icon:      qt.NewQIcon4(":/icons/trash-main.svg"),
 		OnPressed: v.delete,
@@ -86,6 +93,14 @@ func (v *SaveView) renderAction(action *SaveAction) *qt.QWidget {
 	button.SetStyleSheet(styled.ButtonIconSecondary)
 	button.OnReleased(action.OnPressed)
 	return button.QWidget
+}
+
+func (v *SaveView) resume() {
+	if v.Model.GameSave.State != model.GameSaveReady {
+		router.Push(router.RouteGameWizard, router.Params{
+			"gameSave": v.Model.GameSave,
+		})
+	}
 }
 
 func (v *SaveView) delete() {

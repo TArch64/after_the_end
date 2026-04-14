@@ -2,6 +2,7 @@ package start
 
 import (
 	"after_the_end/app/components/backroundimage"
+	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
@@ -9,14 +10,18 @@ import (
 )
 
 type View struct {
-	*backbone.StatelessView
+	*backbone.StatefullView[*Model]
 	layout *qt.QLayout
 }
 
 func NewView() *View {
 	return &View{
-		StatelessView: backbone.NewStatelessView(),
+		StatefullView: backbone.NewStatefullView(NewModel()),
 	}
+}
+
+func (v *View) ViewBeforeOpen(_ router.Params) error {
+	return v.Model.Load()
 }
 
 func (v *View) ViewInit() *qt.QWidget {
@@ -45,7 +50,7 @@ func (v *View) renderAside() *qt.QWidget {
 
 	layout.AddStretch()
 	layout.AddWidget(v.renderTitle())
-	layout.AddWidget(v.Mount(NewMenuView()))
+	layout.AddWidget(v.Mount(NewMenuView(v.Model)))
 	layout.AddStretch()
 
 	widget.SetLayout(layout.QLayout)

@@ -24,12 +24,15 @@ func (b *StatelessView) ViewID() uniqid.ID {
 	return b.id
 }
 
-func (b *StatelessView) Mount(view View) *qt.QWidget {
+func (b *StatelessView) Mount(view View, manualBeforeInit ...bool) *qt.QWidget {
 	if b.children == nil {
 		b.children = make(map[uniqid.ID]View)
 	}
 
-	view.ViewBeforeInit()
+	if len(manualBeforeInit) == 0 || !manualBeforeInit[0] {
+		view.ViewBeforeInit()
+	}
+
 	widget := view.ViewInit()
 	b.children[view.ViewID()] = view
 	view.ViewAfterInit(widget)

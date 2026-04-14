@@ -1,14 +1,12 @@
 package router
 
-import (
-	"after_the_end/backbone"
-)
-
-type RouteName string
+type Name string
 
 const (
-	RouteStart RouteName = "start"
-	RouteSaves RouteName = "saves"
+	RouteStart      Name = "start"
+	RouteSaves      Name = "saves"
+	RouteGameWizard Name = "game-wizard"
 )
 
-type Routes map[RouteName]backbone.View
+type Params map[string]any
+type Routes map[Name]Route

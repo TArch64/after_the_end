@@ -8,18 +8,18 @@ import (
 	"after_the_end/db/model"
 )
 
-type MenuModel struct {
+type Model struct {
 	*backbone.BaseModel
 	SavesCount uint8
 }
 
-func NewMenuModel() *MenuModel {
-	return &MenuModel{
+func NewModel() *Model {
+	return &Model{
 		BaseModel: backbone.NewBaseModel(),
 	}
 }
 
-func (m *MenuModel) CountSaves() error {
+func (m *Model) Load() error {
 	savesCount, err := db.DB().
 		NewSelect().
 		Model((*model.GameSave)(nil)).
@@ -33,21 +33,21 @@ func (m *MenuModel) CountSaves() error {
 	return nil
 }
 
-func (m *MenuModel) NewGame() error {
-	save := &model.GameSave{
+func (m *Model) NewGame() (*model.GameSave, error) {
+	gameSave := &model.GameSave{
 		Position: m.SavesCount,
 		State:    model.GameSaveCreateMainCharacter,
 	}
 
 	_, err := db.DB().
 		NewInsert().
-		Model(save).
+		Model(gameSave).
 		Exec(m.Ctx)
 
 	if err != nil {
-		return fmt.Errorf("failed to create new game save: %w", err)
+		return nil, fmt.Errorf("failed to create new game save: %w", err)
 	}
 
 	m.SavesCount++
-	return nil
+	return gameSave, nil
 }
