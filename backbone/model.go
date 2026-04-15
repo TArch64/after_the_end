@@ -22,6 +22,10 @@ func (m *BaseModel) ModelInit() {
 	m.Ctx, m.cancelCtx = context.WithCancel(context.Background())
 }
 
+func (m *BaseModel) ModelInitChild(child *BaseModel) {
+	child.Ctx, child.cancelCtx = m.Ctx, m.cancelCtx
+}
+
 func (m *BaseModel) ModelDestroy() {
 	m.cancelCtx()
 }

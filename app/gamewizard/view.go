@@ -12,14 +12,14 @@ import (
 )
 
 type View struct {
-	*backbone.StatefullView[*Model]
+	*backbone.StatefullView[*GameSaveModel]
 	state      backbone.View
 	mainColumn *maincolumn.Widget
 }
 
 func NewView() *View {
 	return &View{
-		StatefullView: backbone.NewStatefullView(NewModel()),
+		StatefullView: backbone.NewStatefullView(NewGameSaveModel()),
 	}
 }
 
@@ -36,9 +36,9 @@ func (v *View) ViewInit() *qt.QWidget {
 	widget.SetObjectName("wizard")
 
 	v.mainColumn = maincolumn.New(widget.Content)
-	v.renderState(widget.Content)
+	v.renderState()
 
-	qtgeometry.Read(widget.Content, func(geometry *qt.QRect) {
+	qtgeometry.Read(v.mainColumn.Container, func(geometry *qt.QRect) {
 		v.state.ViewRoot().SetGeometryWithGeometry(geometry)
 	})
 
@@ -47,10 +47,10 @@ func (v *View) ViewInit() *qt.QWidget {
 
 func (v *View) ViewUpdate() {
 	v.Unmount(v.state)
-	v.renderState(v.ViewRoot())
+	v.renderState()
 }
 
-func (v *View) renderState(parent *qt.QWidget) {
+func (v *View) renderState() {
 	switch v.Model.GameSave.State {
 	case model.GameSaveNew:
 		v.state = NewNameCharacterView(v.Model)
@@ -60,7 +60,5 @@ func (v *View) renderState(parent *qt.QWidget) {
 		return
 	}
 
-	widget := v.Mount(v.state)
-	widget.SetParent(parent)
-	widget.SetGeometryWithGeometry(parent.Geometry())
+	v.mainColumn.AddWidget(v.Mount(v.state))
 }
