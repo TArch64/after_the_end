@@ -8,6 +8,7 @@ import (
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
+	"after_the_end/helper/qtgeometry"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -33,7 +34,7 @@ func (v *View) ViewBeforeOpen(_ router.Params) error {
 func (v *View) ViewInit() *qt.QWidget {
 	widget := backroundimage.New(&backroundimage.Options{
 		Src:          ":/images/background.jpg",
-		OverlayColor: "rgba(0, 0, 0, 0.6)",
+		OverlayColor: backroundimage.OverlayDark,
 	})
 
 	widget.SetObjectName("saves")
@@ -47,13 +48,7 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.mainColumn.AddWidget(v.renderBackButton())
 	v.mainColumn.AddStretch()
 
-	v.resizeScrollArea()
-
-	v.mainColumn.Container.OnResizeEvent(func(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
-		super(event)
-		v.resizeScrollArea()
-	})
-
+	qtgeometry.Read(v.mainColumn.Container, v.resizeScrollArea)
 	return widget.QWidget
 }
 
@@ -94,15 +89,15 @@ func (v *View) renderBackButton() *qt.QWidget {
 	return v.backButton.QWidget
 }
 
-func (v *View) resizeScrollArea() {
-	height := min(int(float32(v.mainColumn.Container.Height())*0.6), 1000)
-	width := v.mainColumn.Container.Width()
+func (v *View) resizeScrollArea(geometry *qt.QRect) {
+	height := min(int(float32(geometry.Height())*0.6), 1000)
+	width := geometry.Width()
 
 	v.scrollArea.SetFixedSize2(width, height)
 
-	escapeScrollBackWidth := width - 32
-	v.list.ViewRoot().SetFixedWidth(escapeScrollBackWidth)
-	v.backButton.SetFixedWidth(escapeScrollBackWidth)
+	scrollableWidth := width - 32
+	v.list.ViewRoot().SetFixedWidth(scrollableWidth)
+	v.backButton.SetFixedWidth(scrollableWidth)
 }
 
 func (v *View) deleteSave(gameSave *model.GameSave) {

@@ -3,7 +3,13 @@ package backroundimage
 import (
 	"fmt"
 
+	"after_the_end/helper/qtgeometry"
+
 	"github.com/mappu/miqt/qt"
+)
+
+const (
+	OverlayDark = "rgba(0, 0, 0, 0.6)"
 )
 
 type Widget struct {
@@ -50,30 +56,25 @@ func (w *Widget) render() {
 		w.renderContent(w.overlay)
 	}
 
-	w.QWidget.OnResizeEvent(w.onResizeEvent)
+	qtgeometry.Read(w.QWidget, w.resize)
 }
 
 func (w *Widget) renderOverlay() {
 	w.overlay = qt.NewQWidget(w.QWidget)
 	w.overlay.SetObjectName("background_overlay")
 	w.overlay.SetStyleSheet(fmt.Sprintf("#background_overlay { background: %s }", w.overlayColor))
-	w.overlay.SetGeometryWithGeometry(w.Geometry())
 }
 
 func (w *Widget) renderContent(container *qt.QWidget) {
 	w.Content = qt.NewQWidget(container)
 	w.Content.SetObjectName("background_content")
-	w.Content.SetGeometryWithGeometry(container.Geometry())
 }
 
 func (w *Widget) OnResizeEvent(handler func()) {
 	w.onResize = handler
 }
 
-func (w *Widget) onResizeEvent(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
-	super(event)
-	geometry := w.Geometry()
-
+func (w *Widget) resize(geometry *qt.QRect) {
 	if w.overlay != nil {
 		w.overlay.SetGeometryWithGeometry(geometry)
 	}

@@ -2,16 +2,19 @@ package gamewizard
 
 import (
 	"after_the_end/app/components/backroundimage"
+	"after_the_end/app/components/maincolumn"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
+	"after_the_end/helper/qtgeometry"
 
 	"github.com/mappu/miqt/qt"
 )
 
 type View struct {
 	*backbone.StatefullView[*Model]
-	state backbone.View
+	state      backbone.View
+	mainColumn *maincolumn.Widget
 }
 
 func NewView() *View {
@@ -27,12 +30,17 @@ func (v *View) ViewBeforeOpen(params router.Params) error {
 func (v *View) ViewInit() *qt.QWidget {
 	widget := backroundimage.New(&backroundimage.Options{
 		Src:          ":/images/background.jpg",
-		OverlayColor: "rgba(0, 0, 0, 0.6)",
+		OverlayColor: backroundimage.OverlayDark,
 	})
 
 	widget.SetObjectName("wizard")
-	v.renderState(widget.QWidget)
-	widget.OnResizeEvent(v.onResize)
+
+	v.mainColumn = maincolumn.New(widget.Content)
+	v.renderState(widget.Content)
+
+	qtgeometry.Read(widget.Content, func(geometry *qt.QRect) {
+		v.state.ViewRoot().SetGeometryWithGeometry(geometry)
+	})
 
 	return widget.QWidget
 }
@@ -55,8 +63,4 @@ func (v *View) renderState(parent *qt.QWidget) {
 	widget := v.Mount(v.state)
 	widget.SetParent(parent)
 	widget.SetGeometryWithGeometry(parent.Geometry())
-}
-
-func (v *View) onResize() {
-	v.state.ViewRoot().SetGeometryWithGeometry(v.ViewRoot().Geometry())
 }
