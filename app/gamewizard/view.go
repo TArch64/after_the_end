@@ -3,6 +3,7 @@ package gamewizard
 import (
 	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/components/maincolumn"
+	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
@@ -29,7 +30,7 @@ func (v *View) ViewBeforeOpen(params router.Params) error {
 
 func (v *View) ViewInit() *qt.QWidget {
 	widget := backroundimage.New(&backroundimage.Options{
-		Src:          ":/images/background.jpg",
+		Src:          resources.Image("background.jpg"),
 		OverlayColor: backroundimage.OverlayDark,
 	})
 

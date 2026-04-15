@@ -2,6 +2,7 @@ package start
 
 import (
 	"after_the_end/app/components/backroundimage"
+	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -26,7 +27,7 @@ func (v *View) ViewBeforeOpen(_ router.Params) error {
 
 func (v *View) ViewInit() *qt.QWidget {
 	widget := backroundimage.New(&backroundimage.Options{
-		Src: ":/images/background.jpg",
+		Src: resources.Image("background.jpg"),
 	})
 
 	widget.SetObjectName("start_window")

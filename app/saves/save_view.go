@@ -2,6 +2,7 @@ package saves
 
 import (
 	"after_the_end/app/dialog/confirm"
+	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -49,13 +50,13 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 
 	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_load",
-		Icon:      qt.NewQIcon4(":/icons/resume-main.svg"),
+		Icon:      resources.QIcon("resume-main"),
 		OnClicked: v.resume,
 	}))
 
 	row.AddWidget(v.renderAction(&SaveAction{
 		Name:      "save_delete",
-		Icon:      qt.NewQIcon4(":/icons/trash-main.svg"),
+		Icon:      resources.QIcon("trash-main"),
 		OnClicked: v.delete,
 	}))
 

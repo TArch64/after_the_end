@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"after_the_end/app/appwindow"
+	"after_the_end/app/resources"
 	_ "after_the_end/app/resources"
 	"after_the_end/db"
 
@@ -26,15 +27,21 @@ func main() {
 }
 
 func initFont() {
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Black.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Bold.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-ExtraBold.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-ExtraLight.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Light.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Medium.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Regular.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-SemiBold.ttf")
-	qt.QFontDatabase_AddApplicationFont(":/fonts/Handjet-Thin.ttf")
+	fonts := []string{
+		"Handjet-Black",
+		"Handjet-Bold",
+		"Handjet-ExtraBold",
+		"Handjet-ExtraLight",
+		"Handjet-Light",
+		"Handjet-Medium",
+		"Handjet-Regular",
+		"Handjet-SemiBold",
+		"Handjet-Thin",
+	}
+
+	for _, font := range fonts {
+		qt.QFontDatabase_AddApplicationFont(resources.Font(font))
+	}
 
 	qt.QApplication_SetFont(qt.NewQFont6("Handjet", 20))
 }
