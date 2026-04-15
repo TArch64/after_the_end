@@ -100,6 +100,7 @@ func (v *SaveView) resume() {
 	if v.Model.GameSave.State != model.GameSaveReady {
 		router.Push(router.RouteGameWizard, router.Params{
 			"gameSave": v.Model.GameSave,
+			"returnTo": router.RouteSaves,
 		})
 	}
 }

@@ -16,6 +16,7 @@ type View struct {
 	*backbone.StatefullView[*GameSaveModel]
 	state      backbone.View
 	mainColumn *maincolumn.Widget
+	returnTo   router.Name
 }
 
 func NewView() *View {
@@ -25,6 +26,12 @@ func NewView() *View {
 }
 
 func (v *View) ViewBeforeOpen(params router.Params) error {
+	if returnTo, ok := params["returnTo"].(router.Name); ok {
+		v.returnTo = returnTo
+	} else {
+		v.returnTo = router.RouteStart
+	}
+
 	return v.Model.Load(params["gameSave"].(*model.GameSave))
 }
 
@@ -54,7 +61,10 @@ func (v *View) ViewUpdate() {
 func (v *View) renderState() {
 	switch v.Model.GameSave.State {
 	case model.GameSaveNew:
-		v.state = NewNameCharacterView(v.Model)
+		v.state = NewNameCharacterView(&NameCharacterViewOptions{
+			Model:  v.Model,
+			OnBack: v.onBack,
+		})
 	}
 
 	if v.state == nil {
@@ -62,4 +72,8 @@ func (v *View) renderState() {
 	}
 
 	v.mainColumn.AddWidget(v.Mount(v.state))
+}
+
+func (v *View) onBack() {
+	router.Push(v.returnTo)
 }

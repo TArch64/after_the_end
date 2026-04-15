@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"after_the_end/app/dialog/errorreport"
-	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
@@ -22,12 +21,19 @@ type NameCharacterView struct {
 	*backbone.StatelessView
 	model     *GameSaveModel
 	nameField *qt.QLineEdit
+	onBack    func()
 }
 
-func NewNameCharacterView(model *GameSaveModel) *NameCharacterView {
+type NameCharacterViewOptions struct {
+	Model  *GameSaveModel
+	OnBack func()
+}
+
+func NewNameCharacterView(options *NameCharacterViewOptions) *NameCharacterView {
 	return &NameCharacterView{
 		StatelessView: backbone.NewStatelessView(),
-		model:         model,
+		model:         options.Model,
+		onBack:        options.OnBack,
 	}
 }
 
@@ -72,7 +78,7 @@ func (v *NameCharacterView) renderActions() *qt.QWidget {
 	row.AddWidget2(v.renderAction(&NameCharacterAction{
 		Title:     "Back",
 		Name:      "name_character_back",
-		OnClicked: v.backStep,
+		OnClicked: v.onBack,
 	}), 1)
 
 	row.AddWidget2(v.renderAction(&NameCharacterAction{
@@ -116,8 +122,4 @@ func (v *NameCharacterView) validate() error {
 	}
 
 	return nil
-}
-
-func (v *NameCharacterView) backStep() {
-	router.Push(router.RouteStart)
 }
