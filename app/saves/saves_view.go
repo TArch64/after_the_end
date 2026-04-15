@@ -2,6 +2,7 @@ package saves
 
 import (
 	"after_the_end/app/components/backroundimage"
+	"after_the_end/app/components/maincolumn"
 	"after_the_end/app/dialog/errorreport"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
@@ -13,9 +14,10 @@ import (
 
 type View struct {
 	*backbone.StatefullView[*Model]
+	mainColumn *maincolumn.Widget
 	scrollArea *qt.QScrollArea
-	listWidth  int
 	list       *ListView
+	backButton *qt.QPushButton
 }
 
 func NewView() *View {
@@ -36,43 +38,23 @@ func (v *View) ViewInit() *qt.QWidget {
 
 	widget.SetObjectName("saves")
 
-	column := qt.NewQVBoxLayout2()
-	column.SetObjectName("saves_column")
+	v.mainColumn = maincolumn.New(widget.Content)
+	v.mainColumn.SetObjectName("saves_column")
 
-	column.AddStretch()
-	column.AddWidget3(v.renderContainer(), 0, qt.AlignCenter)
-	column.AddStretch()
+	v.mainColumn.AddStretch()
+	v.mainColumn.AddWidget(v.renderTitle())
+	v.mainColumn.AddWidget(v.renderScrollArea())
+	v.mainColumn.AddWidget(v.renderBackButton())
+	v.mainColumn.AddStretch()
 
-	widget.Content.SetLayout(column.QLayout)
+	v.resizeScrollArea()
+
+	v.mainColumn.Container.OnResizeEvent(func(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
+		super(event)
+		v.resizeScrollArea()
+	})
+
 	return widget.QWidget
-}
-
-func (v *View) renderContainer() *qt.QWidget {
-	screen := qt.QGuiApplication_PrimaryScreen().Geometry()
-	width := min(int(float32(screen.Width())*0.6), 1000)
-	height := min(int(float32(screen.Height())*0.6), 1000)
-
-	widget := qt.NewQWidget2()
-	widget.SetObjectName("saves_container")
-
-	layout := qt.NewQVBoxLayout(widget)
-	layout.SetObjectName("saves_container")
-	layout.AddStretch()
-	layout.AddWidget(v.renderTitle())
-
-	v.scrollArea = qt.NewQScrollArea2()
-	v.scrollArea.SetObjectName("saves_scroll")
-	v.scrollArea.SetFixedSize2(width, height)
-	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Transparent+"padding: 0"))
-	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
-
-	v.listWidth = v.scrollArea.Width() - 32
-	v.scrollArea.SetWidget(v.renderList())
-
-	layout.AddWidget(v.scrollArea.QWidget)
-	layout.AddWidget(v.renderBackButton())
-	layout.AddStretch()
-	return widget
 }
 
 func (v *View) renderTitle() *qt.QWidget {
@@ -83,27 +65,44 @@ func (v *View) renderTitle() *qt.QWidget {
 	return title.QWidget
 }
 
+func (v *View) renderScrollArea() *qt.QWidget {
+	v.scrollArea = qt.NewQScrollArea2()
+	v.scrollArea.SetObjectName("saves_scroll")
+	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Transparent+"padding: 0"))
+	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
+	v.scrollArea.SetWidget(v.renderList())
+	return v.scrollArea.QWidget
+}
+
 func (v *View) renderList() *qt.QWidget {
 	v.list = NewListView(&ListViewOptions{
 		GameSaves: v.Model.List,
 		OnDelete:  v.deleteSave,
 	})
 
-	widget := v.Mount(v.list)
-	widget.SetFixedWidth(v.listWidth)
-	return widget
+	return v.Mount(v.list)
 }
 
 func (v *View) renderBackButton() *qt.QWidget {
-	button := qt.NewQPushButton3("Back")
-	button.SetStyleSheet(styled.Button)
-	button.SetFixedWidth(v.listWidth)
+	v.backButton = qt.NewQPushButton3("Back")
+	v.backButton.SetStyleSheet(styled.Button)
 
-	button.OnClicked(func() {
+	v.backButton.OnClicked(func() {
 		router.Push(router.RouteStart)
 	})
 
-	return button.QWidget
+	return v.backButton.QWidget
+}
+
+func (v *View) resizeScrollArea() {
+	height := min(int(float32(v.mainColumn.Container.Height())*0.6), 1000)
+	width := v.mainColumn.Container.Width()
+
+	v.scrollArea.SetFixedSize2(width, height)
+
+	escapeScrollBackWidth := width - 32
+	v.list.ViewRoot().SetFixedWidth(escapeScrollBackWidth)
+	v.backButton.SetFixedWidth(escapeScrollBackWidth)
 }
 
 func (v *View) deleteSave(gameSave *model.GameSave) {
