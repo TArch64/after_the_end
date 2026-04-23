@@ -7,9 +7,9 @@ import (
 	"github.com/uptrace/bun/migrate"
 )
 
-func v5AddCharacterName(migrations *migrate.Migrations) error {
+func v3AddGameSaveStateColumn(migrations *migrate.Migrations) error {
 	return migrations.Register(func(ctx context.Context, db *bun.DB) error {
-		_, err := db.ExecContext(ctx, `ALTER TABLE characters ADD COLUMN name text NOT NULL DEFAULT ''`)
+		_, err := db.ExecContext(ctx, "ALTER TABLE game_saves ADD COLUMN state text NOT NULL")
 		return err
 	}, nil)
 }

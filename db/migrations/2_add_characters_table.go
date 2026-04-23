@@ -13,7 +13,7 @@ func v2AddCharactersTable(migrations *migrate.Migrations) error {
 			CREATE TABLE characters (
 				id integer NOT NULL PRIMARY KEY AUTOINCREMENT,
 				type text NOT NULL,
-				save_id int NOT NULL REFERENCES characters (id) ON DELETE CASCADE,
+				save_id int NOT NULL REFERENCES game_saves (id) ON DELETE CASCADE,
 				created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 				updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 			);

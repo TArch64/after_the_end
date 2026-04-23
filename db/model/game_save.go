@@ -16,4 +16,5 @@ type GameSave struct {
 
 	// Relations
 	Characters []*Character `bun:"rel:has-many,join:id=save_id"`
+	Locations  []*Location  `bun:"rel:has-many,join:id=save_id"`
 }
