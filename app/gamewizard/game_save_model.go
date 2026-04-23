@@ -3,6 +3,7 @@ package gamewizard
 import (
 	"fmt"
 
+	"after_the_end/app/gamewizard/mapgenerator"
 	"after_the_end/backbone"
 	"after_the_end/db"
 	"after_the_end/db/model"
@@ -41,6 +42,14 @@ func (m *GameSaveModel) Save(columns ...string) error {
 
 	if err != nil {
 		return fmt.Errorf("save game: %w", err)
+	}
+
+	return nil
+}
+
+func (m *GameSaveModel) GenerateMap() error {
+	if err := mapgenerator.Generate(m.Ctx, m.GameSave); err != nil {
+		return fmt.Errorf("generate map: %w", err)
 	}
 
 	return nil

@@ -21,7 +21,7 @@ func v6AddLocationsTable(migrations *migrate.Migrations) error {
 			CREATE TABLE location_hexes (
 				q int NOT NULL,
 				r int NOT NULL,
-				s int GENERATED ALWAYS AS (-q - r) VIRTUAL,
+				s int NOT NULL, 
 				elevation int NOT NULL,
 				location_id int NOT NULL REFERENCES locations (id) ON DELETE CASCADE,
 				PRIMARY KEY (q, r)

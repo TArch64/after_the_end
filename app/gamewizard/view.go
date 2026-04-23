@@ -1,6 +1,8 @@
 package gamewizard
 
 import (
+	"slices"
+
 	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/components/maincolumn"
 	"after_the_end/app/dialog/errorreport"
@@ -62,6 +64,11 @@ func (v *View) renderState() {
 			OnBack: v.onBack,
 			OnNext: v.onNext,
 		})
+	case model.GameSaveGeneratingMap:
+		v.state = NewGeneratingMapView(&GeneratingMapViewOptions{
+			Model:  v.Model,
+			OnNext: v.onNext,
+		})
 	}
 
 	if v.state == nil {
@@ -76,7 +83,10 @@ func (v *View) onBack() {
 }
 
 func (v *View) onNext() {
-	v.setNextState()
+	if err := v.nextState(); err != nil {
+		errorreport.Show(v.ViewRoot(), err)
+		return
+	}
 
 	if v.Model.GameSave.State == model.GameSaveReady {
 		v.onComplete()
@@ -86,15 +96,10 @@ func (v *View) onNext() {
 	v.ViewUpdate()
 }
 
-func (v *View) setNextState() {
-	switch v.Model.GameSave.State {
-	case model.GameSaveNew:
-		v.Model.GameSave.State = model.GameSaveReady
-	}
-
-	if err := v.Model.Save("state"); err != nil {
-		errorreport.Show(v.ViewRoot(), err)
-	}
+func (v *View) nextState() error {
+	index := slices.Index(model.GameSaveStateVariants, v.Model.GameSave.State)
+	v.Model.GameSave.State = model.GameSaveStateVariants[index+1]
+	return v.Model.Save("state")
 }
 
 func (v *View) onComplete() {

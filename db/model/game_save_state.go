@@ -9,12 +9,14 @@ import (
 type GameSaveState string
 
 const (
-	GameSaveNew   GameSaveState = "New"
-	GameSaveReady GameSaveState = "Ready"
+	GameSaveNew           GameSaveState = "New"
+	GameSaveGeneratingMap GameSaveState = "GeneratingMap"
+	GameSaveReady         GameSaveState = "Ready"
 )
 
-var gameSaveStateVariants = []GameSaveState{
+var GameSaveStateVariants = []GameSaveState{
 	GameSaveNew,
+	GameSaveGeneratingMap,
 	GameSaveReady,
 }
 
@@ -22,14 +24,14 @@ var _ sql.Scanner = (*GameSaveState)(nil)
 var _ driver.Valuer = (*GameSaveState)(nil)
 
 func (m *GameSaveState) Scan(value any) (err error) {
-	if *m, err = scanEnum(value, gameSaveStateVariants); err != nil {
+	if *m, err = scanEnum(value, GameSaveStateVariants); err != nil {
 		return fmt.Errorf("failed to scan GameSaveState: %w", err)
 	}
 	return nil
 }
 
 func (m GameSaveState) Value() (driver.Value, error) {
-	value, err := valueEnum(m, gameSaveStateVariants)
+	value, err := valueEnum(m, GameSaveStateVariants)
 	if err != nil {
 		return nil, fmt.Errorf("failed to value GameSaveState: %w", err)
 	}
