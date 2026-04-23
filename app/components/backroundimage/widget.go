@@ -3,8 +3,6 @@ package backroundimage
 import (
 	"fmt"
 
-	"after_the_end/helper/qtgeometry"
-
 	"github.com/mappu/miqt/qt"
 )
 
@@ -22,21 +20,13 @@ type Widget struct {
 }
 
 type Options struct {
-	Parent       *qt.QWidget
 	Src          string
 	OverlayColor string
 }
 
 func New(options *Options) *Widget {
-	var qWidget *qt.QWidget
-	if options.Parent == nil {
-		qWidget = qt.NewQWidget2()
-	} else {
-		qWidget = qt.NewQWidget(options.Parent)
-	}
-
 	widget := &Widget{
-		QWidget:      qWidget,
+		QWidget:      qt.NewQWidget2(),
 		src:          options.Src,
 		overlayColor: options.OverlayColor,
 	}
@@ -49,39 +39,29 @@ func (w *Widget) render() {
 	w.SetProperty("background-image", qt.NewQVariant11(true))
 	w.SetStyleSheet(fmt.Sprintf("QWidget[background-image='true'] { background: url(%s) }", w.src))
 
-	if w.overlayColor == "" {
-		w.renderContent(w.QWidget)
-	} else {
-		w.renderOverlay()
-		w.renderContent(w.overlay)
+	layout := qt.NewQVBoxLayout(w.QWidget)
+	layout.SetContentsMargins(0, 0, 0, 0)
+
+	if w.overlayColor != "" {
+		layout.AddWidget(w.renderOverlay())
+		layout = qt.NewQVBoxLayout(w.overlay)
+		layout.SetContentsMargins(0, 0, 0, 0)
 	}
 
-	qtgeometry.Read(w.QWidget, w.resize)
+	layout.AddWidget(w.renderContent())
 }
 
-func (w *Widget) renderOverlay() {
+func (w *Widget) renderOverlay() *qt.QWidget {
 	w.overlay = qt.NewQWidget(w.QWidget)
 	w.overlay.SetObjectName("background_overlay")
+	w.overlay.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
 	w.overlay.SetStyleSheet(fmt.Sprintf("#background_overlay { background: %s }", w.overlayColor))
+	return w.overlay
 }
 
-func (w *Widget) renderContent(container *qt.QWidget) {
-	w.Content = qt.NewQWidget(container)
+func (w *Widget) renderContent() *qt.QWidget {
+	w.Content = qt.NewQWidget2()
+	w.Content.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
 	w.Content.SetObjectName("background_content")
-}
-
-func (w *Widget) OnResizeEvent(handler func()) {
-	w.onResize = handler
-}
-
-func (w *Widget) resize(geometry *qt.QRect) {
-	if w.overlay != nil {
-		w.overlay.SetGeometryWithGeometry(geometry)
-	}
-
-	w.Content.SetGeometryWithGeometry(geometry)
-
-	if w.onResize != nil {
-		w.onResize()
-	}
+	return w.Content
 }

@@ -25,6 +25,7 @@ func (v *View) ViewInit(_ *qt.QWidget) {
 	v.window = qt.NewQMainWindow2()
 	v.window.SetObjectName("main_window")
 	v.window.SetWindowTitle("AfterTheEnd")
+	v.window.ResizeWithQSize(qt.QGuiApplication_PrimaryScreen().Geometry().Size())
 
 	centralWidget := v.Mount(router.NewView(&router.Options{
 		InitialRoute: router.RouteStart,

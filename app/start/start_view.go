@@ -12,7 +12,6 @@ import (
 
 type View struct {
 	*backbone.StatefullView[*Model]
-	layout *qt.QLayout
 }
 
 func NewView() *View {
@@ -32,12 +31,11 @@ func (v *View) ViewInit() *qt.QWidget {
 
 	widget.SetObjectName("start_window")
 
-	row := qt.NewQHBoxLayout2()
+	row := qt.NewQHBoxLayout(widget.Content)
 	row.SetObjectName("start_window_row")
 	row.AddWidget3(v.renderAside(), 0, qt.AlignVCenter)
 	row.AddStretch()
 
-	widget.Content.SetLayout(row.QLayout)
 	return widget.QWidget
 }
 

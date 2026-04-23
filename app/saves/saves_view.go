@@ -14,12 +14,15 @@ import (
 	"github.com/mappu/miqt/qt"
 )
 
+const (
+	scrollSafeZone = 32
+)
+
 type View struct {
 	*backbone.StatefullView[*Model]
 	mainColumn *maincolumn.Widget
 	scrollArea *qt.QScrollArea
 	list       *ListView
-	backButton *qt.QPushButton
 }
 
 func NewView() *View {
@@ -43,13 +46,12 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.mainColumn = maincolumn.New(widget.Content)
 	v.mainColumn.SetObjectName("saves_column")
 
-	v.mainColumn.AddStretch()
+	v.mainColumn.AddStretchWithStretch(1)
 	v.mainColumn.AddWidget(v.renderTitle())
-	v.mainColumn.AddWidget(v.renderScrollArea())
-	v.mainColumn.AddWidget(v.renderBackButton())
-	v.mainColumn.AddStretch()
+	v.mainColumn.AddWidget2(v.renderScrollArea(), 5)
+	v.mainColumn.AddLayout(v.renderBackButton())
+	v.mainColumn.AddStretchWithStretch(1)
 
-	qtgeometry.Read(v.mainColumn.Container, v.resizeScrollArea)
 	return widget.QWidget
 }
 
@@ -58,12 +60,14 @@ func (v *View) renderTitle() *qt.QWidget {
 	title.SetStyleSheet(styled.Title2)
 	title.SetGraphicsEffect(styled.TitleShadow())
 	title.SetContentsMargins(0, 0, 0, 10)
+	title.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
 	return title.QWidget
 }
 
 func (v *View) renderScrollArea() *qt.QWidget {
 	v.scrollArea = qt.NewQScrollArea2()
 	v.scrollArea.SetObjectName("saves_scroll")
+	v.scrollArea.SetMaximumHeight(1000)
 	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Transparent+"padding: 0"))
 	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
 	v.scrollArea.SetWidget(v.renderList())
@@ -76,29 +80,30 @@ func (v *View) renderList() *qt.QWidget {
 		OnDelete:  v.deleteSave,
 	})
 
-	return v.Mount(v.list)
+	widget := v.Mount(v.list)
+	widget.SetContentsMargins(0, 0, scrollSafeZone, 0)
+
+	qtgeometry.Read(v.mainColumn.Container, func(geometry *qt.QRect) {
+		widget.SetFixedWidth(geometry.Width() - scrollSafeZone)
+	})
+
+	return widget
 }
 
-func (v *View) renderBackButton() *qt.QWidget {
-	v.backButton = qt.NewQPushButton3("Back")
-	v.backButton.SetStyleSheet(styled.Button)
+func (v *View) renderBackButton() *qt.QLayout {
+	button := qt.NewQPushButton3("Back")
+	button.SetStyleSheet(styled.Button)
+	button.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
 
-	v.backButton.OnClicked(func() {
+	button.OnClicked(func() {
 		router.Push(router.RouteStart)
 	})
 
-	return v.backButton.QWidget
-}
+	layout := qt.NewQHBoxLayout2()
+	layout.SetContentsMargins(1, 0, scrollSafeZone+8, 0)
+	layout.AddWidget(button.QWidget)
 
-func (v *View) resizeScrollArea(geometry *qt.QRect) {
-	height := min(int(float32(geometry.Height())*0.6), 1000)
-	width := geometry.Width()
-
-	v.scrollArea.SetFixedSize2(width, height)
-
-	scrollableWidth := width - 32
-	v.list.ViewRoot().SetFixedWidth(scrollableWidth)
-	v.backButton.SetFixedWidth(scrollableWidth)
+	return layout.QLayout
 }
 
 func (v *View) deleteSave(gameSave *model.GameSave) {
@@ -113,4 +118,11 @@ func (v *View) deleteSave(gameSave *model.GameSave) {
 func (v *View) ViewUpdate() {
 	v.Unmount(v.list)
 	v.scrollArea.SetWidget(v.renderList())
+}
+
+func (v *View) ViewDestroy() {
+	v.StatefullView.ViewDestroy()
+	v.mainColumn = nil
+	v.scrollArea = nil
+	v.list = nil
 }

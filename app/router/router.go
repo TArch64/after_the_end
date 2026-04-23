@@ -62,6 +62,7 @@ func (v *View) renderRoute(name Name, params Params) {
 
 	v.currentRoute = newRoute
 	widget := v.Mount(v.currentRoute, true)
+	widget.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
 
 	cover := qt.NewQVBoxLayout(v.container)
 	cover.SetObjectName("router_container")

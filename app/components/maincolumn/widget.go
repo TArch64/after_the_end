@@ -1,8 +1,6 @@
 package maincolumn
 
 import (
-	"after_the_end/helper/qtgeometry"
-
 	"github.com/mappu/miqt/qt"
 )
 
@@ -22,15 +20,16 @@ func New(target *qt.QWidget) *Widget {
 }
 
 func (w *Widget) render() {
-	w.Container = qt.NewQWidget(w.target)
-	w.Container.SetObjectName("main_column_container")
-	w.Container.SetLayout(w.QLayout)
-	qtgeometry.Read(w.target, w.renderSize)
-
+	row := qt.NewQHBoxLayout(w.target)
+	row.SetContentsMargins(50, 50, 50, 50)
+	row.AddWidget(w.renderContainer())
 }
 
-func (w *Widget) renderSize(geometry *qt.QRect) {
-	width := min(1000, int(float32(geometry.Width())*0.6))
-	x := max(0, (geometry.Width()-width)/2)
-	w.Container.SetGeometry(x, 0, width, geometry.Height())
+func (w *Widget) renderContainer() *qt.QWidget {
+	w.Container = qt.NewQWidget2()
+	w.Container.SetObjectName("main_column_container")
+	w.Container.SetLayout(w.QLayout)
+	w.Container.SetMaximumWidth(1000)
+	w.Container.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
+	return w.Container
 }

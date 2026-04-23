@@ -46,9 +46,9 @@ func (v *NameCharacterView) ViewInit() *qt.QWidget {
 	column.SetSpacing(20)
 
 	column.AddStretch()
-	column.AddWidget3(v.renderTitle(), 0, qt.AlignCenter)
+	column.AddWidget(v.renderTitle())
 	column.AddWidget(v.renderNameField())
-	column.AddWidget(v.renderActions())
+	column.AddLayout(v.renderActions())
 	column.AddStretch()
 
 	return widget
@@ -66,13 +66,13 @@ func (v *NameCharacterView) renderNameField() *qt.QWidget {
 	v.nameField = qt.NewQLineEdit2()
 	v.nameField.SetObjectName("name_character_field")
 	v.nameField.SetStyleSheet(styled.LineEdit)
+	v.nameField.SetPlaceholderText("Main Character Name")
 	v.nameField.SetText(v.model.MainCharacterModel.Character.Name)
 	return v.nameField.QWidget
 }
 
-func (v *NameCharacterView) renderActions() *qt.QWidget {
-	widget := qt.NewQWidget2()
-	row := qt.NewQHBoxLayout(widget)
+func (v *NameCharacterView) renderActions() *qt.QLayout {
+	row := qt.NewQHBoxLayout2()
 	row.SetContentsMargins(0, 0, 0, 0)
 
 	row.AddWidget2(v.renderAction(&NameCharacterAction{
@@ -87,7 +87,7 @@ func (v *NameCharacterView) renderActions() *qt.QWidget {
 		OnClicked: v.nextStep,
 	}), 3)
 
-	return widget
+	return row.QLayout
 }
 
 func (v *NameCharacterView) renderAction(action *NameCharacterAction) *qt.QWidget {

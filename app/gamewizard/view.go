@@ -7,7 +7,6 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
-	"after_the_end/helper/qtgeometry"
 
 	"github.com/mappu/miqt/qt"
 )
@@ -46,10 +45,6 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.mainColumn = maincolumn.New(widget.Content)
 	v.renderState()
 
-	qtgeometry.Read(v.mainColumn.Container, func(geometry *qt.QRect) {
-		v.state.ViewRoot().SetGeometryWithGeometry(geometry)
-	})
-
 	return widget.QWidget
 }
 
@@ -76,4 +71,10 @@ func (v *View) renderState() {
 
 func (v *View) onBack() {
 	router.Push(v.returnTo)
+}
+
+func (v *View) ViewDestroy() {
+	v.StatefullView.ViewDestroy()
+	v.mainColumn = nil
+	v.state = nil
 }
