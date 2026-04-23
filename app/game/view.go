@@ -21,8 +21,7 @@ func NewView() *View {
 }
 
 func (v *View) ViewBeforeOpen(params router.Params) error {
-	v.Model.Load(params["gameSave"].(*model.GameSave))
-	return nil
+	return v.Model.Load(params["gameSave"].(*model.GameSave))
 }
 
 func (v *View) ViewInit() *qt.QWidget {

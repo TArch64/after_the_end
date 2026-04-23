@@ -1,7 +1,10 @@
 package game
 
 import (
+	"fmt"
+
 	"after_the_end/backbone"
+	"after_the_end/db"
 	"after_the_end/db/model"
 )
 
@@ -16,6 +19,21 @@ func NewModel() *Model {
 	}
 }
 
-func (m *Model) Load(gameSave *model.GameSave) {
+func (m *Model) Load(gameSave *model.GameSave) error {
 	m.GameSave = gameSave
+
+	err := db.DB().
+		NewSelect().
+		Model(m.GameSave).
+		WherePK().
+		Relation("Characters").
+		Relation("Locations").
+		Relation("Locations.Hexes").
+		Scan(m.Ctx)
+
+	if err != nil {
+		return fmt.Errorf("load game data: %w", err)
+	}
+
+	return nil
 }
