@@ -92,5 +92,10 @@ func (v *MenuView) continueGame() {
 		router.Push(router.RouteGameWizard, router.Params{
 			"gameSave": gameSave,
 		})
+		return
 	}
+
+	router.Push(router.RouteGame, router.Params{
+		"gameSave": gameSave,
+	})
 }

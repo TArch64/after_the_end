@@ -22,11 +22,13 @@ type NameCharacterView struct {
 	model     *GameSaveModel
 	nameField *qt.QLineEdit
 	onBack    func()
+	onNext    func()
 }
 
 type NameCharacterViewOptions struct {
 	Model  *GameSaveModel
 	OnBack func()
+	OnNext func()
 }
 
 func NewNameCharacterView(options *NameCharacterViewOptions) *NameCharacterView {
@@ -34,6 +36,7 @@ func NewNameCharacterView(options *NameCharacterViewOptions) *NameCharacterView 
 		StatelessView: backbone.NewStatelessView(),
 		model:         options.Model,
 		onBack:        options.OnBack,
+		onNext:        options.OnNext,
 	}
 }
 
@@ -110,7 +113,10 @@ func (v *NameCharacterView) nextStep() {
 
 	if err != nil {
 		errorreport.Show(v.ViewRoot(), err)
+		return
 	}
+
+	v.onNext()
 }
 
 func (v *NameCharacterView) validate() error {

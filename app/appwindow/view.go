@@ -1,6 +1,7 @@
 package appwindow
 
 import (
+	"after_the_end/app/game"
 	"after_the_end/app/gamewizard"
 	"after_the_end/app/router"
 	"after_the_end/app/saves"
@@ -34,6 +35,7 @@ func (v *View) ViewInit(_ *qt.QWidget) {
 			router.RouteStart:      start.NewView(),
 			router.RouteSaves:      saves.NewView(),
 			router.RouteGameWizard: gamewizard.NewView(),
+			router.RouteGame:       game.NewView(),
 		},
 	}))
 

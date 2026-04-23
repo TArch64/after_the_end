@@ -94,10 +94,7 @@ func (v *View) renderBackButton() *qt.QLayout {
 	button := qt.NewQPushButton3("Back")
 	button.SetStyleSheet(styled.Button)
 	button.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
-
-	button.OnClicked(func() {
-		router.Push(router.RouteStart)
-	})
+	button.OnClicked(v.onBack)
 
 	layout := qt.NewQHBoxLayout2()
 	layout.SetContentsMargins(1, 0, scrollSafeZone+8, 0)
@@ -109,6 +106,11 @@ func (v *View) renderBackButton() *qt.QLayout {
 func (v *View) deleteSave(gameSave *model.GameSave) {
 	if err := v.Model.Delete(gameSave); err != nil {
 		errorreport.Show(v.ViewRoot(), err)
+		return
+	}
+
+	if len(v.Model.List) == 0 {
+		v.onBack()
 		return
 	}
 
@@ -125,4 +127,8 @@ func (v *View) ViewDestroy() {
 	v.mainColumn = nil
 	v.scrollArea = nil
 	v.list = nil
+}
+
+func (v *View) onBack() {
+	router.Push(router.RouteStart)
 }

@@ -102,7 +102,12 @@ func (v *SaveView) resume() {
 			"gameSave": v.Model.GameSave,
 			"returnTo": router.RouteSaves,
 		})
+		return
 	}
+
+	router.Push(router.RouteGame, router.Params{
+		"gameSave": v.Model.GameSave,
+	})
 }
 
 func (v *SaveView) delete() {

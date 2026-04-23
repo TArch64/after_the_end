@@ -3,6 +3,7 @@ package gamewizard
 import (
 	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/components/maincolumn"
+	"after_the_end/app/dialog/errorreport"
 	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
@@ -59,6 +60,7 @@ func (v *View) renderState() {
 		v.state = NewNameCharacterView(&NameCharacterViewOptions{
 			Model:  v.Model,
 			OnBack: v.onBack,
+			OnNext: v.onNext,
 		})
 	}
 
@@ -71,6 +73,34 @@ func (v *View) renderState() {
 
 func (v *View) onBack() {
 	router.Push(v.returnTo)
+}
+
+func (v *View) onNext() {
+	v.setNextState()
+
+	if v.Model.GameSave.State == model.GameSaveReady {
+		v.onComplete()
+		return
+	}
+
+	v.ViewUpdate()
+}
+
+func (v *View) setNextState() {
+	switch v.Model.GameSave.State {
+	case model.GameSaveNew:
+		v.Model.GameSave.State = model.GameSaveReady
+	}
+
+	if err := v.Model.Save("state"); err != nil {
+		errorreport.Show(v.ViewRoot(), err)
+	}
+}
+
+func (v *View) onComplete() {
+	router.Push(router.RouteGame, router.Params{
+		"gameSave": v.Model.GameSave,
+	})
 }
 
 func (v *View) ViewDestroy() {
