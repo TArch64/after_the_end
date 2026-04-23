@@ -5,7 +5,7 @@ import (
 
 	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/components/maincolumn"
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
@@ -84,7 +84,7 @@ func (v *View) onBack() {
 
 func (v *View) onNext() {
 	if err := v.nextState(); err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 

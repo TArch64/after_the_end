@@ -1,7 +1,7 @@
 package start
 
 import (
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
@@ -73,7 +73,7 @@ func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 func (v *MenuView) createNewGame() {
 	gameSave, err := v.model.NewGame()
 	if err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 	}
 
 	router.Push(router.RouteGameWizard, router.Params{
@@ -84,7 +84,7 @@ func (v *MenuView) createNewGame() {
 func (v *MenuView) continueGame() {
 	gameSave, err := v.model.GetLastGame()
 	if err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 

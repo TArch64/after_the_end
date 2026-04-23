@@ -3,7 +3,7 @@ package gamewizard
 import (
 	"time"
 
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
@@ -60,7 +60,7 @@ func (v *GeneratingMapView) generateMap() {
 
 	mainthread.Start(func() {
 		if err != nil {
-			errorreport.Show(v.ViewRoot(), err)
+			reporterr.Show(v.ViewRoot(), err)
 			return
 		}
 

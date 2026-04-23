@@ -3,7 +3,7 @@ package saves
 import (
 	"after_the_end/app/components/backroundimage"
 	"after_the_end/app/components/maincolumn"
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
@@ -105,7 +105,7 @@ func (v *View) renderBackButton() *qt.QLayout {
 
 func (v *View) deleteSave(gameSave *model.GameSave) {
 	if err := v.Model.Delete(gameSave); err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 

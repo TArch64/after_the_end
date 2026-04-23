@@ -1,4 +1,4 @@
-package errorreport
+package reporterr
 
 import (
 	"log/slog"

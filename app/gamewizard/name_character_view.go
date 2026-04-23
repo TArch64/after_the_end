@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
@@ -104,7 +104,7 @@ func (v *NameCharacterView) renderAction(action *NameCharacterAction) *qt.QWidge
 func (v *NameCharacterView) nextStep() {
 	err := v.validate()
 	if err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 
@@ -112,7 +112,7 @@ func (v *NameCharacterView) nextStep() {
 	err = v.model.MainCharacterModel.Save("name")
 
 	if err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 

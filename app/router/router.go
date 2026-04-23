@@ -3,7 +3,7 @@ package router
 import (
 	"log/slog"
 
-	"after_the_end/app/dialog/errorreport"
+	"after_the_end/app/dialog/reporterr"
 	"after_the_end/backbone"
 
 	"github.com/mappu/miqt/qt"
@@ -51,7 +51,7 @@ func (v *View) renderRoute(name Name, params Params) {
 	newRoute.ViewBeforeInit()
 
 	if err := newRoute.ViewBeforeOpen(params); err != nil {
-		errorreport.Show(v.ViewRoot(), err)
+		reporterr.Show(v.ViewRoot(), err)
 		return
 	}
 
