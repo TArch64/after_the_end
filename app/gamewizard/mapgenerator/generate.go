@@ -6,9 +6,14 @@ import (
 
 	"after_the_end/db"
 	"after_the_end/db/model"
-	"after_the_end/helper/mathg"
+	"after_the_end/helper/axial"
 
 	"github.com/uptrace/bun"
+)
+
+const (
+	height = 7
+	width  = 30
 )
 
 func Generate(ctx context.Context, gameSave *model.GameSave) error {
@@ -46,19 +51,10 @@ func generateWorldMap() *model.Location {
 		Name: "World Map",
 	}
 
-	const radius = 4
-
-	for q := -radius; q <= radius; q++ {
-		for r := -radius; r <= radius; r++ {
-			s := -q - r
-			if mathg.Abs(s) <= radius {
-				location.Hexes = append(location.Hexes, &model.LocationHex{
-					Q: q,
-					R: r,
-					S: s,
-				})
-			}
-		}
+	for coord := range axial.RectIterator(width, height) {
+		location.Hexes = append(location.Hexes, &model.LocationHex{
+			Coord: coord,
+		})
 	}
 
 	return location

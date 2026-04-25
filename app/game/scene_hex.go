@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"math"
 
 	"after_the_end/db/model"
@@ -24,7 +25,8 @@ var (
 )
 
 type SceneHex struct {
-	*qt.QGraphicsPathItem
+	gPath       *qt.QGraphicsPathItem
+	gText       *qt.QGraphicsTextItem
 	scene       *qt.QGraphicsScene
 	locationHex *model.LocationHex
 }
@@ -34,9 +36,8 @@ func NewSceneHex(
 	locationHex *model.LocationHex,
 ) *SceneHex {
 	item := &SceneHex{
-		QGraphicsPathItem: qt.NewQGraphicsPathItem(),
-		scene:             scene,
-		locationHex:       locationHex,
+		scene:       scene,
+		locationHex: locationHex,
 	}
 
 	item.render()
@@ -44,21 +45,40 @@ func NewSceneHex(
 }
 
 func (h *SceneHex) render() {
-	path := h.renderPath()
-	h.QGraphicsPathItem = h.scene.AddPath(path)
-	h.QGraphicsPathItem.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
+	h.renderPath()
+	h.renderText()
 }
 
-func (h *SceneHex) renderPath() *qt.QPainterPath {
+func (h *SceneHex) renderPath() {
 	cx := hexSize * 1.5 * float64(h.locationHex.Q)
 	cy := hexSize * (sqrt3/2*float64(h.locationHex.Q) + sqrt3*float64(h.locationHex.R))
 
 	path := qt.NewQPainterPath()
-	path.MoveTo2(cx+hexCorners[0].X()*hexSize, cy+hexCorners[0].Y()*hexSize)
+	path.MoveTo2(hexCorners[0].X()*hexSize, hexCorners[0].Y()*hexSize)
 	for idx := 1; idx < len(hexCorners); idx++ {
-		path.LineTo2(cx+hexCorners[idx].X()*hexSize, cy+hexCorners[idx].Y()*hexSize)
+		path.LineTo2(hexCorners[idx].X()*hexSize, hexCorners[idx].Y()*hexSize)
 	}
 
 	path.CloseSubpath()
-	return path
+	h.gPath = h.scene.AddPath(path)
+	h.gPath.SetPos2(cx, cy)
+	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
+}
+
+func (h *SceneHex) renderText() {
+	h.gText = qt.NewQGraphicsTextItem4(
+		fmt.Sprintf("q %d\nr %d\ns %d",
+			h.locationHex.Q,
+			h.locationHex.R,
+			h.locationHex.S,
+		),
+		h.gPath.QGraphicsItem,
+	)
+
+	rect := h.gText.BoundingRect()
+	h.gText.SetPos2(-rect.Width()/2, -rect.Height()/2)
+}
+
+func (h *SceneHex) Delete() {
+	h.gPath.Delete()
 }
