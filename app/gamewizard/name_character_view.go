@@ -3,7 +3,6 @@ package gamewizard
 import (
 	"errors"
 	"strings"
-	"time"
 
 	"after_the_end/app/dialog/reporterr"
 	"after_the_end/backbone"
@@ -74,7 +73,7 @@ func (v *NameCharacterView) renderNameField() *qt.QWidget {
 	v.nameField.SetPlaceholderText("Main Character Name")
 	v.nameField.SetText(v.model.MainCharacterModel.Character.Name)
 
-	go qttimer.In(100*time.Millisecond, func() {
+	qttimer.NextTick(func() {
 		v.nameField.SetFocusWithReason(qt.OtherFocusReason)
 	})
 

@@ -1,4 +1,4 @@
-package game
+package scene
 
 import (
 	"fmt"
@@ -24,18 +24,18 @@ var (
 	}
 )
 
-type SceneHex struct {
+type Hex struct {
 	gPath       *qt.QGraphicsPathItem
 	gText       *qt.QGraphicsTextItem
 	scene       *qt.QGraphicsScene
 	locationHex *model.LocationHex
 }
 
-func NewSceneHex(
+func NewHex(
 	scene *qt.QGraphicsScene,
 	locationHex *model.LocationHex,
-) *SceneHex {
-	item := &SceneHex{
+) *Hex {
+	item := &Hex{
 		scene:       scene,
 		locationHex: locationHex,
 	}
@@ -44,12 +44,12 @@ func NewSceneHex(
 	return item
 }
 
-func (h *SceneHex) render() {
+func (h *Hex) render() {
 	h.renderPath()
 	h.renderText()
 }
 
-func (h *SceneHex) renderPath() {
+func (h *Hex) renderPath() {
 	cx := hexSize * 1.5 * float64(h.locationHex.Q)
 	cy := hexSize * (sqrt3/2*float64(h.locationHex.Q) + sqrt3*float64(h.locationHex.R))
 
@@ -65,7 +65,7 @@ func (h *SceneHex) renderPath() {
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
 }
 
-func (h *SceneHex) renderText() {
+func (h *Hex) renderText() {
 	h.gText = qt.NewQGraphicsTextItem4(
 		fmt.Sprintf("q %d\nr %d\ns %d",
 			h.locationHex.Q,
@@ -79,6 +79,6 @@ func (h *SceneHex) renderText() {
 	h.gText.SetPos2(-rect.Width()/2, -rect.Height()/2)
 }
 
-func (h *SceneHex) Delete() {
+func (h *Hex) Delete() {
 	h.gPath.Delete()
 }

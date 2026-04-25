@@ -1,49 +1,65 @@
-package game
+package scene
 
 import (
+	"after_the_end/app/game/state"
+	"after_the_end/app/router"
 	"after_the_end/backbone"
+	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
 
 	"github.com/mappu/miqt/qt"
 )
 
-type SceneView struct {
+const (
+	guiWidth  = 20
+	guiHeight = 10
+)
+
+type View struct {
 	*backbone.StatelessView
-	model         *Model
-	hexes         map[*model.LocationHex]*SceneHex
+	stateModel    *state.Model
+	hexes         map[*model.LocationHex]*Hex
 	graphicsScene *qt.QGraphicsScene
 	graphicsView  *qt.QGraphicsView
-	panning       *ScenePanning
+	panning       *Panning
 }
 
-func NewSceneView(gameModel *Model) *SceneView {
-	return &SceneView{
+func NewView(stateModel *state.Model) *View {
+	return &View{
 		StatelessView: backbone.NewStatelessView(),
-		model:         gameModel,
-		panning:       NewScenePanning(),
+		stateModel:    stateModel,
+		panning:       NewPanning(),
 	}
 }
 
-func (v *SceneView) ViewInit() *qt.QWidget {
+func (v *View) ViewInit() *qt.QWidget {
 	v.graphicsScene = qt.NewQGraphicsScene()
-	v.renderLocation(v.model.ActiveLocation)
-	return v.renderGraphicsView()
+	v.renderLocation(v.stateModel.ActiveLocation)
+	v.renderGraphicsView()
+
+	widget := qt.NewQWidget2()
+	grid := qt.NewQGridLayout(widget)
+	grid.SetContentsMargins(0, 0, 0, 0)
+	grid.SetSpacing(0)
+	grid.AddWidget3(v.graphicsView.QWidget, 0, 0, guiHeight, guiWidth)
+	grid.AddWidget2(v.renderBackButton(), 0, guiWidth-1)
+	return widget
 }
 
-func (v *SceneView) renderLocation(location *model.Location) {
+func (v *View) renderLocation(location *model.Location) {
 	if v.hexes != nil {
 		for _, hex := range v.hexes {
 			hex.Delete()
 		}
 	}
 
-	v.hexes = make(map[*model.LocationHex]*SceneHex, len(location.Hexes))
+	v.hexes = make(map[*model.LocationHex]*Hex, len(location.Hexes))
 	for _, locationHex := range location.Hexes {
-		v.hexes[locationHex] = NewSceneHex(v.graphicsScene, locationHex)
+		v.hexes[locationHex] = NewHex(v.graphicsScene, locationHex)
 	}
 }
 
-func (v *SceneView) renderGraphicsView() *qt.QWidget {
+func (v *View) renderGraphicsView() {
 	v.graphicsView = qt.NewQGraphicsView3(v.graphicsScene)
 	v.panning.View = v.graphicsView
 
@@ -69,13 +85,24 @@ func (v *SceneView) renderGraphicsView() *qt.QWidget {
 		super(event)
 		v.resizeView()
 	})
-
-	return v.graphicsView.QWidget
 }
 
-func (v *SceneView) resizeView() {
+func (v *View) resizeView() {
 	boundingRect := v.graphicsScene.ItemsBoundingRect()
 	padX := float64(v.graphicsView.Viewport().Width()) / 4
 	padY := float64(v.graphicsView.Viewport().Height()) / 4
 	v.graphicsView.SetSceneRect(boundingRect.Adjusted(-padX, -padY, padX, padY))
+}
+
+func (v *View) renderBackButton() *qt.QWidget {
+	button := qt.NewQPushButton3("back")
+	button.SetContentsMargins(0, 0, 0, 0)
+	button.SetObjectName("gui_back")
+	button.SetStyleSheet(styled.Button + "#gui_back { margin: 0 }")
+
+	button.OnClicked(func() {
+		router.Push(router.RouteStart)
+	})
+
+	return button.QWidget
 }

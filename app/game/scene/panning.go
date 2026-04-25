@@ -1,28 +1,28 @@
-package game
+package scene
 
 import (
 	"github.com/mappu/miqt/qt"
 )
 
-type ScenePanning struct {
+type Panning struct {
 	lastPosition *qt.QPoint
 	View         *qt.QGraphicsView
 }
 
-func NewScenePanning() *ScenePanning {
-	return &ScenePanning{}
+func NewPanning() *Panning {
+	return &Panning{}
 }
 
-func (p *ScenePanning) isActive() bool {
+func (p *Panning) isActive() bool {
 	return p.lastPosition != nil
 }
 
-func (p *ScenePanning) Start(event *qt.QMouseEvent) {
+func (p *Panning) Start(event *qt.QMouseEvent) {
 	p.lastPosition = event.Pos()
 	p.View.SetCursor(qt.NewQCursor2(qt.ClosedHandCursor))
 }
 
-func (p *ScenePanning) Move(event *qt.QMouseEvent) {
+func (p *Panning) Move(event *qt.QMouseEvent) {
 	if p.isActive() {
 		current := event.Pos()
 		delta := qt.NewQPoint3(current).OperatorMinusAssign(p.lastPosition)
@@ -34,7 +34,7 @@ func (p *ScenePanning) Move(event *qt.QMouseEvent) {
 	}
 }
 
-func (p *ScenePanning) End() {
+func (p *Panning) End() {
 	p.lastPosition = nil
 	p.View.UnsetCursor()
 }
