@@ -10,7 +10,8 @@ import (
 
 type Model struct {
 	*backbone.BaseModel
-	GameSave *model.GameSave
+	GameSave       *model.GameSave
+	ActiveLocation *model.Location
 }
 
 func NewModel() *Model {
@@ -35,5 +36,6 @@ func (m *Model) Load(gameSave *model.GameSave) error {
 		return fmt.Errorf("load game data: %w", err)
 	}
 
+	m.ActiveLocation = m.GameSave.Locations[0]
 	return nil
 }

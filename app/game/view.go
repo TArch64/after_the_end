@@ -1,8 +1,6 @@
 package game
 
 import (
-	"fmt"
-
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
@@ -26,10 +24,7 @@ func (v *View) ViewBeforeOpen(params router.Params) error {
 
 func (v *View) ViewInit() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	column := qt.NewQVBoxLayout(widget)
-
-	text := qt.NewQLabel3(fmt.Sprintf("save #%d", v.Model.GameSave.ID))
-	column.AddWidget(text.QWidget)
-
+	column := qt.NewQStackedLayout(widget)
+	column.AddWidget(v.Mount(NewSceneView(v.Model)))
 	return widget
 }
