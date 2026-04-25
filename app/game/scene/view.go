@@ -18,7 +18,7 @@ const (
 type View struct {
 	*backbone.StatelessView
 	stateModel    *state.Model
-	hexes         map[*model.LocationHex]*Hex
+	hexes         map[string]*Hex
 	graphicsScene *qt.QGraphicsScene
 	graphicsView  *qt.QGraphicsView
 	panning       *Panning
@@ -53,9 +53,9 @@ func (v *View) renderLocation(location *model.Location) {
 		}
 	}
 
-	v.hexes = make(map[*model.LocationHex]*Hex, len(location.Hexes))
+	v.hexes = make(map[string]*Hex, len(location.Hexes))
 	for _, locationHex := range location.Hexes {
-		v.hexes[locationHex] = NewHex(v.graphicsScene, locationHex)
+		v.hexes[locationHex.StringKey()] = NewHex(v.graphicsScene, locationHex)
 	}
 }
 
@@ -78,7 +78,9 @@ func (v *View) renderGraphicsView() {
 	})
 
 	v.graphicsView.OnMouseReleaseEvent(func(super func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-		v.panning.End()
+		if !v.panning.End() {
+			v.onSceneClick(event)
+		}
 	})
 
 	v.graphicsView.OnResizeEvent(func(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
@@ -92,6 +94,17 @@ func (v *View) resizeView() {
 	padX := float64(v.graphicsView.Viewport().Width()) / 4
 	padY := float64(v.graphicsView.Viewport().Height()) / 4
 	v.graphicsView.SetSceneRect(boundingRect.Adjusted(-padX, -padY, padX, padY))
+}
+
+func (v *View) onSceneClick(event *qt.QMouseEvent) {
+	item := v.graphicsView.ItemAt(event.Pos())
+	if item == nil {
+		return
+	}
+
+	if key := item.Data(int(KeyHex)).ToString(); key != "" {
+		v.hexes[key].OnClicked()
+	}
 }
 
 func (v *View) renderBackButton() *qt.QWidget {

@@ -58,11 +58,13 @@ func (h *Hex) renderPath() {
 	for idx := 1; idx < len(hexCorners); idx++ {
 		path.LineTo2(hexCorners[idx].X()*hexSize, hexCorners[idx].Y()*hexSize)
 	}
-
 	path.CloseSubpath()
-	h.gPath = h.scene.AddPath(path)
+
+	h.gPath = qt.NewQGraphicsPathItem2(path)
 	h.gPath.SetPos2(cx, cy)
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
+	h.setHexData(h.gPath.QGraphicsItem)
+	h.scene.AddItem(h.gPath.QGraphicsItem)
 }
 
 func (h *Hex) renderText() {
@@ -77,6 +79,15 @@ func (h *Hex) renderText() {
 
 	rect := h.gText.BoundingRect()
 	h.gText.SetPos2(-rect.Width()/2, -rect.Height()/2)
+	h.setHexData(h.gText.QGraphicsItem)
+}
+
+func (h *Hex) setHexData(item *qt.QGraphicsItem) {
+	item.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.StringKey()))
+}
+
+func (h *Hex) OnClicked() {
+	fmt.Printf("clicked on %s\n", h.locationHex.StringKey())
 }
 
 func (h *Hex) Delete() {
