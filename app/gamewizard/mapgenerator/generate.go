@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	height = 7
-	width  = 30
+	height = 4
+	width  = 7
 )
 
 func Generate(ctx context.Context, gameSave *model.GameSave) error {

@@ -8,3 +8,6 @@ build: compile_qrc
 
 build_debug: compile_qrc
   CC='clang' CXX='clang++' CGO_CXXFLAGS='-std=c++17' go build -gcflags="all=-N -l" -o dist/game .
+
+db_drop:
+  rm ~/Library/Application\ Support/ua.tarch64.AfterTheEnd/application.db

@@ -45,6 +45,7 @@ func DB() *bun.DB {
 
 func getDatabasePath() (path string, err error) {
 	path = qt.QStandardPaths_WritableLocation(qt.QStandardPaths__AppDataLocation)
+	path = filepath.Join(path, "ua.tarch64.AfterTheEnd")
 
 	if err = os.MkdirAll(path, 0700); err != nil {
 		path = ""

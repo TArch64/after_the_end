@@ -7,7 +7,7 @@ import (
 	"github.com/uptrace/bun/migrate"
 )
 
-func v6AddLocationsTable(migrations *migrate.Migrations) error {
+func v3AddLocationsTable(migrations *migrate.Migrations) error {
 	return migrations.Register(func(ctx context.Context, db *bun.DB) error {
 		_, err := db.ExecContext(ctx, `
 			CREATE TABLE locations (
@@ -24,7 +24,7 @@ func v6AddLocationsTable(migrations *migrate.Migrations) error {
 				s int NOT NULL, 
 				elevation int NOT NULL,
 				location_id int NOT NULL REFERENCES locations (id) ON DELETE CASCADE,
-				PRIMARY KEY (q, r)
+				PRIMARY KEY (location_id, q, r)
 			);
 
 			CREATE INDEX idx_location_hexes_location_id ON location_hexes(location_id);
