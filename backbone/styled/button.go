@@ -8,6 +8,7 @@ QPushButton {
 	font-size: 18px;
 	font-weight: bold;
 	padding: 12px 32px;
+  margin: 0;
 	border: 3px solid #fff;
 	border-right-color: #aaa;
 	border-bottom-color: #aaa;
@@ -30,6 +31,7 @@ QPushButton {
 	border: none;
 	color: #888;
 	padding: 6px;
+  margin: 0;
 }
 QPushButton:hover {
 	background: #eee;

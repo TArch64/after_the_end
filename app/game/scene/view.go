@@ -64,39 +64,31 @@ func (v *View) renderGraphicsView() {
 	v.panning.View = v.graphicsView
 
 	v.graphicsView.SetFrameShape(qt.QFrame__NoFrame)
-
 	v.graphicsView.SetVerticalScrollBarPolicy(qt.ScrollBarAlwaysOff)
 	v.graphicsView.SetHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff)
-	v.graphicsView.OnWheelEvent(func(super func(event *qt.QWheelEvent), event *qt.QWheelEvent) {})
 
-	v.graphicsView.OnMousePressEvent(func(super func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-		v.panning.Start(event)
-	})
-
-	v.graphicsView.OnMouseMoveEvent(func(super func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-		v.panning.Move(event)
-	})
-
-	v.graphicsView.OnMouseReleaseEvent(func(super func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-		if !v.panning.End() {
-			v.onSceneClick(event)
-		}
-	})
-
-	v.graphicsView.OnResizeEvent(func(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
-		super(event)
-		v.resizeView()
-	})
+	v.graphicsView.OnWheelEvent(v.onWheelEvent)
+	v.graphicsView.OnMousePressEvent(v.onMousePressEvent)
+	v.graphicsView.OnMouseMoveEvent(v.onMouseMoveEvent)
+	v.graphicsView.OnMouseReleaseEvent(v.onMouseReleaseEvent)
+	v.graphicsView.OnResizeEvent(v.onResizeEvent)
 }
 
-func (v *View) resizeView() {
-	boundingRect := v.graphicsScene.ItemsBoundingRect()
-	padX := float64(v.graphicsView.Viewport().Width()) / 4
-	padY := float64(v.graphicsView.Viewport().Height()) / 4
-	v.graphicsView.SetSceneRect(boundingRect.Adjusted(-padX, -padY, padX, padY))
+func (v *View) onWheelEvent(_ func(event *qt.QWheelEvent), _ *qt.QWheelEvent) {}
+
+func (v *View) onMousePressEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
+	v.panning.Start(event)
 }
 
-func (v *View) onSceneClick(event *qt.QMouseEvent) {
+func (v *View) onMouseMoveEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
+	v.panning.Move(event)
+}
+
+func (v *View) onMouseReleaseEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
+	if v.panning.End() {
+		return
+	}
+
 	item := v.graphicsView.ItemAt(event.Pos())
 	if item == nil {
 		return
@@ -107,11 +99,19 @@ func (v *View) onSceneClick(event *qt.QMouseEvent) {
 	}
 }
 
+func (v *View) onResizeEvent(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
+	super(event)
+	boundingRect := v.graphicsScene.ItemsBoundingRect()
+	padX := float64(v.graphicsView.Viewport().Width()) / 4
+	padY := float64(v.graphicsView.Viewport().Height()) / 4
+	v.graphicsView.SetSceneRect(boundingRect.Adjusted(-padX, -padY, padX, padY))
+}
+
 func (v *View) renderBackButton() *qt.QWidget {
 	button := qt.NewQPushButton3("back")
 	button.SetContentsMargins(0, 0, 0, 0)
 	button.SetObjectName("gui_back")
-	button.SetStyleSheet(styled.Button + "#gui_back { margin: 0 }")
+	button.SetStyleSheet(styled.Button)
 
 	button.OnClicked(func() {
 		router.Push(router.RouteStart)
