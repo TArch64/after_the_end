@@ -3,7 +3,7 @@ package qttimer
 import (
 	"time"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 func Timeout(duration time.Duration, action func()) {

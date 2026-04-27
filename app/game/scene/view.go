@@ -4,10 +4,9 @@ import (
 	"after_the_end/app/game/state"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
-	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 const (
@@ -110,8 +109,7 @@ func (v *View) onResizeEvent(super func(event *qt.QResizeEvent), event *qt.QResi
 func (v *View) renderBackButton() *qt.QWidget {
 	button := qt.NewQPushButton3("back")
 	button.SetContentsMargins(0, 0, 0, 0)
-	button.SetObjectName("gui_back")
-	button.SetStyleSheet(styled.Button)
+	button.SetProperty("button", qt.NewQVariant11("main"))
 
 	button.OnClicked(func() {
 		router.Push(router.RouteStart)

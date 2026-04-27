@@ -1,0 +1,40 @@
+[card='1'] {
+  background: #DDD;
+  color: #444;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 12px 32px;
+  border: 3px solid #FFF;
+  border-right-color: #AAA;
+  border-bottom-color: #AAA;
+}
+
+[card='2'] {
+  background: #DDD;
+  color: #444;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border: 3px solid #FFF;
+  border-right-color: #AAA;
+  border-bottom-color: #AAA;
+}
+
+QScrollArea {
+  background: transparent;
+}
+
+QScrollBar {
+  background: transparent;
+}
+
+QScrollBar {
+  width: 20px;
+}
+
+QScrollBar::handle {
+  background: #DDD;
+  border: 3px solid #FFF;
+  border-right-color: #AAA;
+  border-bottom-color: #AAA;
+}

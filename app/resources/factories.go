@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 func Resource(root string, parts ...string) string {

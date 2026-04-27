@@ -11,7 +11,7 @@ import (
 	"after_the_end/backbone"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View struct {
@@ -42,8 +42,6 @@ func (v *View) ViewInit() *qt.QWidget {
 		Src:          resources.Image("background.jpg"),
 		OverlayColor: backroundimage.OverlayDark,
 	})
-
-	widget.SetObjectName("wizard")
 
 	v.mainColumn = maincolumn.New(widget.Content)
 	v.renderState()

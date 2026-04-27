@@ -6,7 +6,7 @@ import (
 	"after_the_end/app/dialog/reporterr"
 	"after_the_end/backbone"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View struct {
@@ -33,7 +33,6 @@ func NewView(options *Options) *View {
 
 func (v *View) ViewInit() *qt.QWidget {
 	v.container = qt.NewQWidget2()
-	v.container.SetObjectName("router_container")
 	v.renderRoute(v.initialRoute, nil)
 	onPush = v.renderRoute
 	return v.container
@@ -65,7 +64,6 @@ func (v *View) renderRoute(name Name, params Params) {
 	widget.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
 
 	cover := qt.NewQVBoxLayout(v.container)
-	cover.SetObjectName("router_container")
 	cover.SetContentsMargins(0, 0, 0, 0)
 	cover.AddWidget(widget)
 	v.currentLayout = cover.QLayout

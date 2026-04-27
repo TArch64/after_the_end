@@ -7,7 +7,7 @@ import (
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View struct {
@@ -29,10 +29,7 @@ func (v *View) ViewInit() *qt.QWidget {
 		Src: resources.Image("background.jpg"),
 	})
 
-	widget.SetObjectName("start_window")
-
 	row := qt.NewQHBoxLayout(widget.Content)
-	row.SetObjectName("start_window_row")
 	row.AddWidget3(v.renderAside(), 0, qt.AlignVCenter)
 	row.AddStretch()
 
@@ -41,10 +38,8 @@ func (v *View) ViewInit() *qt.QWidget {
 
 func (v *View) renderAside() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetObjectName("aside")
 
 	layout := qt.NewQVBoxLayout2()
-	layout.SetObjectName("aside")
 	layout.SetContentsMargins(100, 20, 100, 20)
 
 	layout.AddStretch()
@@ -59,7 +54,7 @@ func (v *View) renderAside() *qt.QWidget {
 func (v *View) renderTitle() *qt.QWidget {
 	title := qt.NewQLabel3("After the End")
 	title.SetAlignment(qt.AlignCenter)
-	title.SetStyleSheet(styled.Title1)
+	title.SetProperty("text-title", qt.NewQVariant4(1))
 	title.SetGraphicsEffect(styled.TitleShadow())
 
 	return title.QWidget

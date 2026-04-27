@@ -11,7 +11,7 @@ import (
 	"after_the_end/db/model"
 	"after_the_end/helper/qtgeometry"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 const (
@@ -41,10 +41,7 @@ func (v *View) ViewInit() *qt.QWidget {
 		OverlayColor: backroundimage.OverlayDark,
 	})
 
-	widget.SetObjectName("saves")
-
 	v.mainColumn = maincolumn.New(widget.Content)
-	v.mainColumn.SetObjectName("saves_column")
 
 	v.mainColumn.AddStretchWithStretch(1)
 	v.mainColumn.AddWidget(v.renderTitle())
@@ -57,7 +54,7 @@ func (v *View) ViewInit() *qt.QWidget {
 
 func (v *View) renderTitle() *qt.QWidget {
 	title := qt.NewQLabel3("Saves")
-	title.SetStyleSheet(styled.Title2)
+	title.SetProperty("text-title", qt.NewQVariant4(2))
 	title.SetGraphicsEffect(styled.TitleShadow())
 	title.SetContentsMargins(0, 0, 0, 10)
 	title.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
@@ -66,10 +63,8 @@ func (v *View) renderTitle() *qt.QWidget {
 
 func (v *View) renderScrollArea() *qt.QWidget {
 	v.scrollArea = qt.NewQScrollArea2()
-	v.scrollArea.SetObjectName("saves_scroll")
 	v.scrollArea.SetMaximumHeight(1000)
-	v.scrollArea.SetStyleSheet(styled.S("#saves_scroll", styled.Transparent+"padding: 0"))
-	v.scrollArea.VerticalScrollBar().SetStyleSheet(styled.CardScrollBar)
+	v.scrollArea.SetFrameShape(qt.QFrame__NoFrame)
 	v.scrollArea.SetWidget(v.renderList())
 	return v.scrollArea.QWidget
 }
@@ -92,7 +87,7 @@ func (v *View) renderList() *qt.QWidget {
 
 func (v *View) renderBackButton() *qt.QLayout {
 	button := qt.NewQPushButton3("Back")
-	button.SetStyleSheet(styled.Button)
+	button.SetProperty("button", qt.NewQVariant11("main"))
 	button.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
 	button.OnClicked(v.onBack)
 

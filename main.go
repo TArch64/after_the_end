@@ -6,9 +6,10 @@ import (
 	"after_the_end/app/appwindow"
 	"after_the_end/app/resources"
 	_ "after_the_end/app/resources"
+	"after_the_end/backbone/styled"
 	"after_the_end/db"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	}
 
 	app := qt.NewQApplication(os.Args)
+	app.SetStyleSheet(styled.Global)
 	initFont()
 
 	windowView := appwindow.NewWindowView()

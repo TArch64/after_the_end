@@ -3,7 +3,7 @@ package backroundimage
 import (
 	"fmt"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 const (
@@ -36,8 +36,8 @@ func New(options *Options) *Widget {
 }
 
 func (w *Widget) render() {
-	w.SetProperty("background-image", qt.NewQVariant11(true))
-	w.SetStyleSheet(fmt.Sprintf("QWidget[background-image='true'] { background: url(%s) }", w.src))
+	w.SetProperty("background-image", qt.NewQVariant8(true))
+	w.SetStyleSheet(fmt.Sprintf("[background-image='true'] { background: url(%s) }", w.src))
 
 	layout := qt.NewQVBoxLayout(w.QWidget)
 	layout.SetContentsMargins(0, 0, 0, 0)
@@ -53,15 +53,14 @@ func (w *Widget) render() {
 
 func (w *Widget) renderOverlay() *qt.QWidget {
 	w.overlay = qt.NewQWidget(w.QWidget)
-	w.overlay.SetObjectName("background_overlay")
+	w.overlay.SetProperty("background-image-overlay", qt.NewQVariant8(true))
 	w.overlay.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
-	w.overlay.SetStyleSheet(fmt.Sprintf("#background_overlay { background: %s }", w.overlayColor))
+	w.overlay.SetStyleSheet(fmt.Sprintf("[background-image-overlay='true'] { background: %s }", w.overlayColor))
 	return w.overlay
 }
 
 func (w *Widget) renderContent() *qt.QWidget {
 	w.Content = qt.NewQWidget2()
 	w.Content.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)
-	w.Content.SetObjectName("background_content")
 	return w.Content
 }

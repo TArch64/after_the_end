@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type Panning struct {

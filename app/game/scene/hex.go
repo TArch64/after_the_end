@@ -6,7 +6,7 @@ import (
 
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 const hexSize = 50

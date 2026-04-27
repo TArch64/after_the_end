@@ -7,8 +7,8 @@ import (
 	"after_the_end/backbone"
 	"after_the_end/backbone/styled"
 
-	"github.com/mappu/miqt/qt"
-	"github.com/mappu/miqt/qt/mainthread"
+	qt "github.com/mappu/miqt/qt6"
+	"github.com/mappu/miqt/qt6/mainthread"
 )
 
 type GeneratingMapView struct {
@@ -32,10 +32,7 @@ func NewGeneratingMapView(options *GeneratingMapViewOptions) *GeneratingMapView 
 
 func (v *GeneratingMapView) ViewInit() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetObjectName("generating_map")
-
 	column := qt.NewQVBoxLayout(widget)
-	column.SetObjectName("generating_map")
 
 	column.AddStretch()
 	column.AddWidget3(v.renderTitle(), 0, qt.AlignCenter)
@@ -48,8 +45,7 @@ func (v *GeneratingMapView) ViewInit() *qt.QWidget {
 
 func (v *GeneratingMapView) renderTitle() *qt.QWidget {
 	title := qt.NewQLabel3("Generating Random Map")
-	title.SetObjectName("generating_map_title")
-	title.SetStyleSheet(styled.S("#generating_map_title", styled.Title2))
+	title.SetProperty("text-title", qt.NewQVariant4(2))
 	title.SetGraphicsEffect(styled.TitleShadow())
 	return title.QWidget
 }

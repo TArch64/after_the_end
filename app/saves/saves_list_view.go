@@ -2,10 +2,9 @@ package saves
 
 import (
 	"after_the_end/backbone"
-	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type ListView struct {
@@ -29,8 +28,7 @@ func NewListView(options *ListViewOptions) *ListView {
 
 func (v *ListView) ViewInit() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetObjectName("saves_list")
-	widget.SetStyleSheet(styled.S("#saves_list", styled.Transparent))
+	widget.SetProperty("bg-reset", qt.NewQVariant8(true))
 
 	column := qt.NewQVBoxLayout(widget)
 	column.SetContentsMargins(0, 0, 0, 0)

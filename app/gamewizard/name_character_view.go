@@ -9,12 +9,11 @@ import (
 	"after_the_end/backbone/styled"
 	"after_the_end/helper/qttimer"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type NameCharacterAction struct {
 	Title     string
-	Name      string
 	OnClicked func()
 }
 
@@ -43,10 +42,8 @@ func NewNameCharacterView(options *NameCharacterViewOptions) *NameCharacterView 
 
 func (v *NameCharacterView) ViewInit() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetObjectName("name_character")
 
 	column := qt.NewQVBoxLayout(widget)
-	column.SetObjectName("name_character")
 	column.SetSpacing(20)
 
 	column.AddStretch()
@@ -60,16 +57,13 @@ func (v *NameCharacterView) ViewInit() *qt.QWidget {
 
 func (v *NameCharacterView) renderTitle() *qt.QWidget {
 	title := qt.NewQLabel3("Name Your Stranger")
-	title.SetObjectName("name_character_title")
-	title.SetStyleSheet(styled.S("#name_character_title", styled.Title2))
+	title.SetProperty("text-title", qt.NewQVariant4(2))
 	title.SetGraphicsEffect(styled.TitleShadow())
 	return title.QWidget
 }
 
 func (v *NameCharacterView) renderNameField() *qt.QWidget {
 	v.nameField = qt.NewQLineEdit2()
-	v.nameField.SetObjectName("name_character_field")
-	v.nameField.SetStyleSheet(styled.LineEdit)
 	v.nameField.SetPlaceholderText("Main Character Name")
 	v.nameField.SetText(v.model.MainCharacterModel.Character.Name)
 
@@ -86,13 +80,11 @@ func (v *NameCharacterView) renderActions() *qt.QLayout {
 
 	row.AddWidget2(v.renderAction(&NameCharacterAction{
 		Title:     "Back",
-		Name:      "name_character_back",
 		OnClicked: v.onBack,
 	}), 1)
 
 	row.AddWidget2(v.renderAction(&NameCharacterAction{
 		Title:     "Next",
-		Name:      "name_character_next",
 		OnClicked: v.nextStep,
 	}), 3)
 
@@ -101,8 +93,7 @@ func (v *NameCharacterView) renderActions() *qt.QLayout {
 
 func (v *NameCharacterView) renderAction(action *NameCharacterAction) *qt.QWidget {
 	button := qt.NewQPushButton3(action.Title)
-	button.SetObjectName(action.Name)
-	button.SetStyleSheet(styled.Button)
+	button.SetProperty("button", qt.NewQVariant11("main"))
 	button.OnClicked(action.OnClicked)
 	return button.QWidget
 }

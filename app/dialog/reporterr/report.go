@@ -3,7 +3,7 @@ package reporterr
 import (
 	"log/slog"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 func Show(parent *qt.QWidget, err error) {

@@ -1,7 +1,7 @@
 package confirm
 
 import (
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type Options struct {

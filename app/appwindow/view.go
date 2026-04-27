@@ -8,7 +8,7 @@ import (
 	"after_the_end/app/start"
 	"after_the_end/backbone"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View struct {
@@ -24,7 +24,6 @@ func NewWindowView() *View {
 
 func (v *View) ViewInit(_ *qt.QWidget) {
 	v.window = qt.NewQMainWindow2()
-	v.window.SetObjectName("main_window")
 	v.window.SetWindowTitle("AfterTheEnd")
 	v.window.ResizeWithQSize(qt.QGuiApplication_PrimaryScreen().Geometry().Size())
 

@@ -1,0 +1,23 @@
+[text-title='1'] {
+	letter-spacing: 4px;
+	color: #fff;
+	font-size: 80px;
+}
+
+[text-title='2'] {
+	letter-spacing: 2px;
+	color: #fff;
+	font-size: 60px;
+}
+
+[text-body='1'] {
+	letter-spacing: 2px;
+	color: #444;
+	font-size: 20px;
+}
+
+[text-body='2'] {
+	letter-spacing: 2px;
+	color: #888;
+	font-size: 18px;
+}

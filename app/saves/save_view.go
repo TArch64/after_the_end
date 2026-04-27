@@ -5,14 +5,12 @@ import (
 	"after_the_end/app/resources"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
-	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type SaveAction struct {
-	Name      string
 	Icon      *qt.QIcon
 	OnClicked func()
 }
@@ -39,9 +37,8 @@ func NewSaveView(options *SaveViewOptions) *SaveView {
 
 func (v *SaveView) ViewInit() *qt.QWidget {
 	container := qt.NewQWidget2()
-	container.SetObjectName("saves_list_item")
 	container.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Fixed)
-	container.SetStyleSheet(styled.S("#saves_list_item", styled.Card2))
+	container.SetProperty("card", qt.NewQVariant4(2))
 
 	row := qt.NewQHBoxLayout(container)
 	row.SetContentsMargins(0, 0, 24, 0)
@@ -49,13 +46,11 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 	row.AddStretch()
 
 	row.AddWidget(v.renderAction(&SaveAction{
-		Name:      "save_load",
 		Icon:      resources.QIcon("resume-main"),
 		OnClicked: v.resume,
 	}))
 
 	row.AddWidget(v.renderAction(&SaveAction{
-		Name:      "save_delete",
 		Icon:      resources.QIcon("trash-main"),
 		OnClicked: v.delete,
 	}))
@@ -65,21 +60,16 @@ func (v *SaveView) ViewInit() *qt.QWidget {
 
 func (v *SaveView) renderInfoColumn() *qt.QWidget {
 	widget := qt.NewQWidget2()
-	widget.SetObjectName("save_info")
-
 	column := qt.NewQVBoxLayout(widget)
-	column.SetObjectName("save_info")
 
 	title := qt.NewQLabel3(v.Model.FormatTitle())
-	title.SetObjectName("save_title")
-	title.SetStyleSheet(styled.Body)
+	title.SetProperty("text-body", qt.NewQVariant4(1))
 	column.AddWidget(title.QWidget)
 
 	column.AddStretch()
 
 	updatedAt := qt.NewQLabel3(v.Model.FormatUpdatedAt())
-	updatedAt.SetObjectName("save_updated_at")
-	updatedAt.SetStyleSheet(styled.Body2)
+	title.SetProperty("text-body", qt.NewQVariant4(2))
 	column.AddWidget(updatedAt.QWidget)
 
 	return widget
@@ -87,11 +77,10 @@ func (v *SaveView) renderInfoColumn() *qt.QWidget {
 
 func (v *SaveView) renderAction(action *SaveAction) *qt.QWidget {
 	button := qt.NewQPushButton2()
-	button.SetObjectName(action.Name)
 	button.SetIcon(action.Icon)
 	button.SetIconSize(qt.NewQSize2(32, 32))
 	button.SetFixedSize2(40, 40)
-	button.SetStyleSheet(styled.ButtonIconSecondary)
+	button.SetProperty("button", qt.NewQVariant11("icon-secondary"))
 	button.OnClicked(action.OnClicked)
 	return button.QWidget
 }

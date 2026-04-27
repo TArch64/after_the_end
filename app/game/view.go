@@ -7,7 +7,7 @@ import (
 	"after_the_end/backbone"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View struct {

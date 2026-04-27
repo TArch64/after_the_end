@@ -4,10 +4,9 @@ import (
 	"after_the_end/app/dialog/reporterr"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
-	"after_the_end/backbone/styled"
 	"after_the_end/db/model"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type MenuView struct {
@@ -29,11 +28,9 @@ func NewMenuView(model *Model) *MenuView {
 
 func (v *MenuView) ViewInit() *qt.QWidget {
 	container := qt.NewQWidget2()
-	container.SetObjectName("start_menu")
 
 	layout := qt.NewQVBoxLayout(container)
 	layout.SetContentsMargins(0, 50, 0, 0)
-	layout.SetObjectName("start_menu")
 
 	layout.AddWidget(v.renderMenuItem(&MenuItem{
 		Title:     "New Game",
@@ -66,7 +63,7 @@ func (v *MenuView) ViewInit() *qt.QWidget {
 func (v *MenuView) renderMenuItem(item *MenuItem) *qt.QWidget {
 	button := qt.NewQPushButton3(item.Title)
 	button.OnClicked(item.OnClicked)
-	button.SetStyleSheet(styled.Button)
+	button.SetProperty("button", qt.NewQVariant11("main"))
 	return button.QWidget
 }
 

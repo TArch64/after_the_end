@@ -1,7 +1,7 @@
 package qtgeometry
 
 import (
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 func Read(target *qt.QWidget, onGeometry func(geometry *qt.QRect)) {

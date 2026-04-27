@@ -1,7 +1,7 @@
 package maincolumn
 
 import (
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type Widget struct {
@@ -27,7 +27,6 @@ func (w *Widget) render() {
 
 func (w *Widget) renderContainer() *qt.QWidget {
 	w.Container = qt.NewQWidget2()
-	w.Container.SetObjectName("main_column_container")
 	w.Container.SetLayout(w.QLayout)
 	w.Container.SetMaximumWidth(1000)
 	w.Container.SetSizePolicy2(qt.QSizePolicy__Expanding, qt.QSizePolicy__Expanding)

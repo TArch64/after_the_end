@@ -3,7 +3,7 @@ package backbone
 import (
 	"after_the_end/helper/uniqid"
 
-	"github.com/mappu/miqt/qt"
+	qt "github.com/mappu/miqt/qt6"
 )
 
 type View interface {
