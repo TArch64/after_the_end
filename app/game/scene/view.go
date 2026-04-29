@@ -7,6 +7,7 @@ import (
 	"after_the_end/db/model"
 
 	qt "github.com/mappu/miqt/qt6"
+	"github.com/mappu/miqt/qt6/opengl"
 )
 
 const (
@@ -62,6 +63,7 @@ func (v *View) renderGraphicsView() {
 	v.graphicsView = qt.NewQGraphicsView3(v.graphicsScene)
 	v.panning.View = v.graphicsView
 
+	v.graphicsView.SetViewport(opengl.NewQOpenGLWidget2().QWidget)
 	v.graphicsView.SetFrameShape(qt.QFrame__NoFrame)
 	v.graphicsView.SetVerticalScrollBarPolicy(qt.ScrollBarAlwaysOff)
 	v.graphicsView.SetHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff)

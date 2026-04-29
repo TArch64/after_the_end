@@ -1,6 +1,6 @@
 package resources
 
-//go:generate miqt-rcc -Input "./app/resources/resources.qrc" -OutputGo "resources.go" -OutputRcc "resources.rcc" -Package "resources" -Qt6 -RccBinary "/Users/personal/Qt/6.10.3/macos/libexec/rcc"
+//go:generate miqt-rcc -Input "./app/resources/resources.qrc" -OutputGo "resources.go" -OutputRcc "resources.rcc" -Package "resources" -Qt6
 
 import (
 	"embed"

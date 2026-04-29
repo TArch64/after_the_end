@@ -15,8 +15,9 @@ func init() {
 		panic(err)
 	}
 
+	var sheet []byte
 	for _, entry := range entries {
-		sheet, err := fs.ReadFile(entry.Name())
+		sheet, err = fs.ReadFile(entry.Name())
 		if err != nil {
 			panic(err)
 		}
@@ -24,6 +25,4 @@ func init() {
 		Global += string(sheet)
 		Global += "\n"
 	}
-
-	println(Global)
 }
