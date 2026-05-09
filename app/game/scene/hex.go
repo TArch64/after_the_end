@@ -2,7 +2,6 @@ package scene
 
 import (
 	"fmt"
-	"math"
 
 	"after_the_end/db/model"
 
@@ -10,19 +9,6 @@ import (
 )
 
 const hexSize = 50
-
-var (
-	sqrt3 = math.Sqrt(3)
-
-	hexCorners = [6]*qt.QPointF{
-		qt.NewQPointF3(1, 0),
-		qt.NewQPointF3(0.5, sqrt3/2),
-		qt.NewQPointF3(-0.5, sqrt3/2),
-		qt.NewQPointF3(-1, 0),
-		qt.NewQPointF3(-0.5, -sqrt3/2),
-		qt.NewQPointF3(0.5, -sqrt3/2),
-	}
-)
 
 type Hex struct {
 	gPath       *qt.QGraphicsPathItem
@@ -53,15 +39,8 @@ func (h *Hex) renderPath() {
 	cx := hexSize * 1.5 * float64(h.locationHex.Q)
 	cy := hexSize * (sqrt3/2*float64(h.locationHex.Q) + sqrt3*float64(h.locationHex.R))
 
-	path := qt.NewQPainterPath()
-	path.MoveTo2(hexCorners[0].X()*hexSize, hexCorners[0].Y()*hexSize)
-	for idx := 1; idx < len(hexCorners); idx++ {
-		path.LineTo2(hexCorners[idx].X()*hexSize, hexCorners[idx].Y()*hexSize)
-	}
-	path.CloseSubpath()
-
-	h.gPath = qt.NewQGraphicsPathItem2(path)
-	h.gPath.SetPos2(cx, cy)
+	h.gPath = qt.NewQGraphicsPathItem2(qt.NewQPainterPath3(hexPath))
+	h.gPath.SetPos2(asIso(cx, cy))
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
 	h.setHexData(h.gPath.QGraphicsItem)
 	h.scene.AddItem(h.gPath.QGraphicsItem)

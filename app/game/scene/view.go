@@ -5,6 +5,7 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
+	"after_the_end/helper/qtgeometry"
 
 	qt "github.com/mappu/miqt/qt6"
 	"github.com/mappu/miqt/qt6/opengl"
@@ -72,7 +73,8 @@ func (v *View) renderGraphicsView() {
 	v.graphicsView.OnMousePressEvent(v.onMousePressEvent)
 	v.graphicsView.OnMouseMoveEvent(v.onMouseMoveEvent)
 	v.graphicsView.OnMouseReleaseEvent(v.onMouseReleaseEvent)
-	v.graphicsView.OnResizeEvent(v.onResizeEvent)
+
+	qtgeometry.Read(v.graphicsView, v.onResizeEvent)
 }
 
 func (v *View) onWheelEvent(_ func(event *qt.QWheelEvent), _ *qt.QWheelEvent) {}
@@ -90,22 +92,30 @@ func (v *View) onMouseReleaseEvent(_ func(event *qt.QMouseEvent), event *qt.QMou
 		return
 	}
 
-	item := v.graphicsView.ItemAt(event.Pos())
-	if item == nil {
-		return
-	}
-
-	if key := item.Data(int(KeyHex)).ToString(); key != "" {
-		v.hexes[key].OnClicked()
+	if item := v.graphicsView.ItemAt(event.Pos()); item == nil {
+		if key := item.Data(int(KeyHex)).ToString(); key != "" {
+			v.hexes[key].OnClicked()
+		}
 	}
 }
 
-func (v *View) onResizeEvent(super func(event *qt.QResizeEvent), event *qt.QResizeEvent) {
-	super(event)
-	boundingRect := v.graphicsScene.ItemsBoundingRect()
-	padX := float64(v.graphicsView.Viewport().Width()) / 4
-	padY := float64(v.graphicsView.Viewport().Height()) / 4
-	v.graphicsView.SetSceneRect(boundingRect.Adjusted(-padX, -padY, padX, padY))
+func (v *View) onResizeEvent(_ *qt.QRect) {
+	viewport := v.graphicsView.Viewport().Rect().ToRectF()
+	padX := float64(viewport.Width()) / 4
+	padY := float64(viewport.Height()) / 4
+
+	sceneRect := v.graphicsScene.ItemsBoundingRect()
+	sceneRect = sceneRect.Adjusted(-padX, -padY, padX, padY)
+
+	if sceneRect.Width() < viewport.Width() {
+		sceneRect.SetWidth(viewport.Width())
+	}
+
+	if sceneRect.Height() < viewport.Height() {
+		sceneRect.SetHeight(viewport.Height())
+	}
+
+	v.graphicsView.SetSceneRect(sceneRect)
 }
 
 func (v *View) renderBackButton() *qt.QWidget {
