@@ -7,27 +7,30 @@ import (
 )
 
 const (
-	sqrt3 = 1.7320508075688772 // math.Sqrt(3)
-	cos30 = 0.8660254037844386 // math.Cos(math.Pi/6)
-	sin30 = 0.5                // math.Sin(math.Pi/6)
+	sqrt3   = 1.7320508075688772 // math.Sqrt(3)
+	cos30   = 0.8660254037844386 // math.Cos(math.Pi/6)
+	sin30   = 0.5                // math.Sin(math.Pi/6)
+	hexSize = 50
 )
 
 var (
-	hexPath = newHexPath()
+	hexPath        = newHexPath(0)
+	hexOutlinePath = newHexPath(2)
 )
 
-func newHexPath() *qt.QPainterPath {
-	const (
-		hexSideX = 0.5 * hexSize
-		hexSideY = (sqrt3 / 2) * hexSize
+func newHexPath(inset float64) *qt.QPainterPath {
+	var (
+		size     = hexSize - inset
+		hexSideX = 0.5 * size
+		hexSideY = (sqrt3 / 2) * size
 	)
 
 	path := qt.NewQPainterPath()
 
-	path.MoveTo2(asIso(hexSize, 0))
+	path.MoveTo2(asIso(size, 0))
 	path.LineTo2(asIso(hexSideX, hexSideY))
 	path.LineTo2(asIso(-hexSideX, hexSideY))
-	path.LineTo2(asIso(-hexSize, 0))
+	path.LineTo2(asIso(-size, 0))
 	path.LineTo2(asIso(-hexSideX, -hexSideY))
 	path.LineTo2(asIso(hexSideX, -hexSideY))
 

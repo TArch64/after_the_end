@@ -22,6 +22,7 @@ type View struct {
 	*backbone.StatelessView
 	stateModel    *state.Model
 	hexes         map[string]*Hex
+	activeHex     *Hex
 	graphicsScene *qt.QGraphicsScene
 	graphicsView  *qt.QGraphicsView
 }
@@ -39,12 +40,12 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.renderGraphicsView()
 
 	qttimer.NextTick(func() {
-		v.centerHex(v.stateModel.MainCharacter.LocationCoord)
+		v.activateHex(v.stateModel.MainCharacter.LocationCoord)
 	})
 
 	v.AutoDispose(
-		command.MainThreadHandle[*cmd.CenterHex](func(cmd *cmd.CenterHex) {
-			v.centerHex(cmd.Coord)
+		command.MainThreadHandle[*cmd.ActivateHex](func(cmd *cmd.ActivateHex) {
+			v.activateHex(cmd.Coord)
 		}),
 	)
 
@@ -76,28 +77,30 @@ func (v *View) renderGraphicsView() {
 	v.graphicsView.SetViewport(opengl.NewQOpenGLWidget2().QWidget)
 	v.graphicsView.SetFrameShape(qt.QFrame__NoFrame)
 
-	v.graphicsView.OnMouseReleaseEvent(v.onMouseReleaseEvent)
-
 	v.graphicsView.SetVerticalScrollBarPolicy(qt.ScrollBarAlwaysOff)
 	v.graphicsView.SetHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff)
 	v.graphicsView.OnWheelEvent(func(_ func(event *qt.QWheelEvent), _ *qt.QWheelEvent) {})
 	v.graphicsView.OnScrollContentsBy(func(_ func(dx int, dy int), _ int, _ int) {})
 }
 
-func (v *View) onMouseReleaseEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-	if item := v.graphicsView.ItemAt(event.Pos()); item != nil {
-		if key := item.Data(int(KeyHex)).ToString(); key != "" {
-			v.hexes[key].OnClicked()
-		}
+func (v *View) activateHex(coord *model.AxialCoord) {
+	activatingHex := v.hexes[coord.StringKey()]
+	if activatingHex.Active {
+		return
 	}
-}
 
-func (v *View) centerHex(coord *model.AxialCoord) {
-	cx, cy := HexCenterPos(coord)
+	if v.activeHex != nil {
+		v.activeHex.SetInactive()
+	}
+
+	v.activeHex = activatingHex
+	v.activeHex.SetActive()
+
+	pos := v.activeHex.Item().Pos()
 	rect := v.graphicsView.Rect().ToRectF()
 	translate := v.graphicsView.Transform()
-	dx := -cx + rect.Width()/2 - translate.Dx()
-	dy := -cy + rect.Height()/2 - translate.Dy()
+	dx := -pos.X() + rect.Width()/2 - translate.Dx()
+	dy := -pos.Y() + rect.Height()/2 - translate.Dy()
 	v.graphicsView.Translate(dx, dy)
 }
 

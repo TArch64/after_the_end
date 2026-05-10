@@ -5,12 +5,12 @@ import (
 	"after_the_end/db/model"
 )
 
-type CenterHex struct {
+type ActivateHex struct {
 	Coord *model.AxialCoord
 }
 
-var _ command.Cmd = (*CenterHex)(nil)
+var _ command.Cmd = (*ActivateHex)(nil)
 
-func (*CenterHex) Kind() string {
+func (*ActivateHex) Kind() string {
 	return "CenterHex"
 }
