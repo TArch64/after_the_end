@@ -11,8 +11,8 @@ type Character struct {
 	ID            ID            `bun:",pk,autoincrement"`
 	Type          CharacterType `bun:",notnull"`
 	Name          string        `bun:",notnull"`
-	LocationID    ID            `bun:",notnull"`
-	LocationCoord *AxialCoord   `bun:",notnull"`
+	LocationID    ID            `bun:",nullzero"`
+	LocationCoord *AxialCoord   `bun:",nullzero"`
 	SaveID        ID            `bun:",notnull"`
 	CreatedAt     time.Time     `bun:",notnull,default:current_timestamp"`
 	UpdatedAt     time.Time     `bun:",notnull,default:current_timestamp"`

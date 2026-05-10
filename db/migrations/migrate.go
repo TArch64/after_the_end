@@ -9,8 +9,8 @@ import (
 
 var migrationFuncs = []func(migrations *migrate.Migrations) error{
 	v1AddGameSavesTable,
-	v2AddCharactersTable,
-	v3AddLocationsTable,
+	v2AddLocationsTable,
+	v3AddCharactersTable,
 }
 
 func Up(db *bun.DB) (err error) {

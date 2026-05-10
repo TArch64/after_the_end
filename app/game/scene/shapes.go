@@ -35,9 +35,9 @@ func newHexPath() *qt.QPainterPath {
 	return path
 }
 
-func HexCenterPos(hex *model.AxialCoord) (float64, float64) {
-	cx := hexSize * 1.5 * float64(hex.Q)
-	cy := hexSize * (sqrt3/2*float64(hex.Q) + sqrt3*float64(hex.R))
+func HexCenterPos(coord *model.AxialCoord) (float64, float64) {
+	cx := hexSize * 1.5 * float64(coord.Q)
+	cy := hexSize * (sqrt3/2*float64(coord.Q) + sqrt3*float64(coord.R))
 	return asIso(cx, cy)
 }
 

@@ -6,9 +6,10 @@ import (
 	qt "github.com/mappu/miqt/qt6"
 )
 
-var idFactory = uniqid.New()
+var viewID = uniqid.New()
 
 type StatelessView struct {
+	*DisposableView
 	children map[uniqid.ID]View
 	id       uniqid.ID
 	root     *qt.QWidget
@@ -16,7 +17,8 @@ type StatelessView struct {
 
 func NewStatelessView() *StatelessView {
 	return &StatelessView{
-		id: idFactory.Next(),
+		DisposableView: NewDisposableView(),
+		id:             viewID.Next(),
 	}
 }
 

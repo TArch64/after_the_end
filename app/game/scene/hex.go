@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"fmt"
-
+	"after_the_end/app/game/command"
+	"after_the_end/app/game/command/cmd"
 	"after_the_end/db/model"
 
 	qt "github.com/mappu/miqt/qt6"
@@ -40,14 +40,14 @@ func (h *Hex) render() {
 
 func (h *Hex) renderPath() {
 	h.gPath = qt.NewQGraphicsPathItem2(qt.NewQPainterPath3(hexPath))
-	h.gPath.SetPos2(HexCenterPos(h.locationHex.AxialCoord))
+	h.gPath.SetPos2(HexCenterPos(h.locationHex.Coord))
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
-	h.gPath.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.StringKey()))
+	h.gPath.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.Coord.StringKey()))
 	h.scene.AddItem(h.gPath.QGraphicsItem)
 }
 
 func (h *Hex) renderText() {
-	text := qt.NewQGraphicsTextItem2(h.locationHex.StringKey())
+	text := qt.NewQGraphicsTextItem2(h.locationHex.Coord.StringKey())
 	h.addChild(text.QGraphicsItem)
 
 	rect := text.BoundingRect()
@@ -60,7 +60,9 @@ func (h *Hex) addChild(child *qt.QGraphicsItem) {
 }
 
 func (h *Hex) OnClicked() {
-	fmt.Printf("clicked on %s\n", h.locationHex.StringKey())
+	command.Dispatch(&cmd.CenterHex{
+		Coord: h.locationHex.Coord,
+	})
 }
 
 func (h *Hex) Delete() {

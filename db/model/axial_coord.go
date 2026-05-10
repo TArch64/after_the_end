@@ -11,6 +11,10 @@ import (
 
 type AxialCoord axial.Coord
 
+func NewAxialCoord(coord *axial.Coord) *AxialCoord {
+	return new(AxialCoord(*coord))
+}
+
 var _ sql.Scanner = (*AxialCoord)(nil)
 var _ driver.Valuer = (*AxialCoord)(nil)
 
@@ -34,8 +38,8 @@ func (c *AxialCoord) Scan(value any) error {
 	return nil
 }
 
-func (c AxialCoord) Value() (driver.Value, error) {
-	return axial.Coord(c).StringKey(), nil
+func (c *AxialCoord) Value() (driver.Value, error) {
+	return axial.Coord(*c).StringKey(), nil
 }
 
 func (c *AxialCoord) S() int {

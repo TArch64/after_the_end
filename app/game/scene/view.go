@@ -1,6 +1,8 @@
 package scene
 
 import (
+	"after_the_end/app/game/command"
+	"after_the_end/app/game/command/cmd"
 	"after_the_end/app/game/state"
 	"after_the_end/app/router"
 	"after_the_end/backbone"
@@ -37,23 +39,14 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.renderGraphicsView()
 
 	qttimer.NextTick(func() {
-		v.centerMainCharacter()
-		qttimer.NextTick(func() {
-			v.centerMainCharacter()
-			qttimer.NextTick(func() {
-				v.centerMainCharacter()
-				qttimer.NextTick(func() {
-					v.centerMainCharacter()
-					qttimer.NextTick(func() {
-						v.centerMainCharacter()
-						qttimer.NextTick(func() {
-							v.centerMainCharacter()
-						})
-					})
-				})
-			})
-		})
+		v.centerHex(v.stateModel.MainCharacter.LocationCoord)
 	})
+
+	v.AutoDispose(
+		command.MainThreadHandle[*cmd.CenterHex](func(cmd *cmd.CenterHex) {
+			v.centerHex(cmd.Coord)
+		}),
+	)
 
 	widget := qt.NewQWidget2()
 	grid := qt.NewQGridLayout(widget)
@@ -73,7 +66,7 @@ func (v *View) renderLocation(location *model.Location) {
 
 	v.hexes = make(map[string]*Hex, len(location.Hexes))
 	for _, locationHex := range location.Hexes {
-		v.hexes[locationHex.StringKey()] = NewHex(v.graphicsScene, locationHex)
+		v.hexes[locationHex.Coord.StringKey()] = NewHex(v.graphicsScene, locationHex)
 	}
 }
 
@@ -99,8 +92,8 @@ func (v *View) onMouseReleaseEvent(_ func(event *qt.QMouseEvent), event *qt.QMou
 	}
 }
 
-func (v *View) centerMainCharacter() {
-	cx, cy := HexCenterPos(v.stateModel.MainCharacter.LocationCoord)
+func (v *View) centerHex(coord *model.AxialCoord) {
+	cx, cy := HexCenterPos(coord)
 	rect := v.graphicsView.Rect().ToRectF()
 	translate := v.graphicsView.Transform()
 	dx := -cx + rect.Width()/2 - translate.Dx()
