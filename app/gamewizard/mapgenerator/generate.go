@@ -42,7 +42,14 @@ func Generate(ctx context.Context, gameSave *model.GameSave) error {
 			return fmt.Errorf("insert location hexes: %w", err)
 		}
 
-		return nil
+		_, err = tx.NewUpdate().
+			Model((*model.Character)(nil)).
+			Set("location_id = ?", worldMap.ID).
+			Set("location_coord = '0:0'").
+			Where("save_id = ? AND type = ?", gameSave.ID, model.CharacterMain).
+			Exec(ctx)
+
+		return err
 	})
 }
 

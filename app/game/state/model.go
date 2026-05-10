@@ -12,6 +12,7 @@ type Model struct {
 	*backbone.BaseModel
 	GameSave       *model.GameSave
 	ActiveLocation *model.Location
+	MainCharacter  *model.Character
 }
 
 func NewModel() *Model {
@@ -36,6 +37,19 @@ func (m *Model) Load(gameSave *model.GameSave) error {
 		return fmt.Errorf("load game data: %w", err)
 	}
 
-	m.ActiveLocation = m.GameSave.Locations[0]
+	for _, character := range m.GameSave.Characters {
+		if character.Type == model.CharacterMain {
+			m.MainCharacter = character
+			break
+		}
+	}
+
+	for _, location := range m.GameSave.Locations {
+		if m.MainCharacter.LocationID == location.ID {
+			m.ActiveLocation = location
+			break
+		}
+	}
+
 	return nil
 }

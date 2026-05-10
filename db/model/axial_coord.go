@@ -14,9 +14,9 @@ type AxialCoord axial.Coord
 var _ sql.Scanner = (*AxialCoord)(nil)
 var _ driver.Valuer = (*AxialCoord)(nil)
 
-func (m *AxialCoord) Scan(value any) error {
+func (c *AxialCoord) Scan(value any) error {
 	if value == nil {
-		*m = AxialCoord{}
+		*c = AxialCoord{}
 		return nil
 	}
 
@@ -30,10 +30,18 @@ func (m *AxialCoord) Scan(value any) error {
 		return fmt.Errorf("failed to scan AxialCoord: %w", err)
 	}
 
-	*m = AxialCoord(*coord)
+	*c = AxialCoord(*coord)
 	return nil
 }
 
-func (m AxialCoord) Value() (driver.Value, error) {
-	return axial.Coord(m).StringKey(), nil
+func (c AxialCoord) Value() (driver.Value, error) {
+	return axial.Coord(c).StringKey(), nil
+}
+
+func (c *AxialCoord) S() int {
+	return axial.Coord(*c).S()
+}
+
+func (c *AxialCoord) StringKey() string {
+	return axial.Coord(*c).StringKey()
 }

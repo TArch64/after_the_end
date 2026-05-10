@@ -5,7 +5,7 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
-	"after_the_end/helper/qtgeometry"
+	"after_the_end/helper/qttimer"
 
 	qt "github.com/mappu/miqt/qt6"
 	"github.com/mappu/miqt/qt6/opengl"
@@ -22,14 +22,12 @@ type View struct {
 	hexes         map[string]*Hex
 	graphicsScene *qt.QGraphicsScene
 	graphicsView  *qt.QGraphicsView
-	panning       *Panning
 }
 
 func NewView(stateModel *state.Model) *View {
 	return &View{
 		StatelessView: backbone.NewStatelessView(),
 		stateModel:    stateModel,
-		panning:       NewPanning(),
 	}
 }
 
@@ -37,6 +35,25 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.graphicsScene = qt.NewQGraphicsScene()
 	v.renderLocation(v.stateModel.ActiveLocation)
 	v.renderGraphicsView()
+
+	qttimer.NextTick(func() {
+		v.centerMainCharacter()
+		qttimer.NextTick(func() {
+			v.centerMainCharacter()
+			qttimer.NextTick(func() {
+				v.centerMainCharacter()
+				qttimer.NextTick(func() {
+					v.centerMainCharacter()
+					qttimer.NextTick(func() {
+						v.centerMainCharacter()
+						qttimer.NextTick(func() {
+							v.centerMainCharacter()
+						})
+					})
+				})
+			})
+		})
+	})
 
 	widget := qt.NewQWidget2()
 	grid := qt.NewQGridLayout(widget)
@@ -62,60 +79,33 @@ func (v *View) renderLocation(location *model.Location) {
 
 func (v *View) renderGraphicsView() {
 	v.graphicsView = qt.NewQGraphicsView3(v.graphicsScene)
-	v.panning.View = v.graphicsView
 
 	v.graphicsView.SetViewport(opengl.NewQOpenGLWidget2().QWidget)
 	v.graphicsView.SetFrameShape(qt.QFrame__NoFrame)
-	v.graphicsView.SetVerticalScrollBarPolicy(qt.ScrollBarAlwaysOff)
-	v.graphicsView.SetHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff)
 
-	v.graphicsView.OnWheelEvent(v.onWheelEvent)
-	v.graphicsView.OnMousePressEvent(v.onMousePressEvent)
-	v.graphicsView.OnMouseMoveEvent(v.onMouseMoveEvent)
 	v.graphicsView.OnMouseReleaseEvent(v.onMouseReleaseEvent)
 
-	qtgeometry.Read(v.graphicsView, v.onResizeEvent)
-}
-
-func (v *View) onWheelEvent(_ func(event *qt.QWheelEvent), _ *qt.QWheelEvent) {}
-
-func (v *View) onMousePressEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-	v.panning.Start(event)
-}
-
-func (v *View) onMouseMoveEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-	v.panning.Move(event)
+	v.graphicsView.SetVerticalScrollBarPolicy(qt.ScrollBarAlwaysOff)
+	v.graphicsView.SetHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff)
+	v.graphicsView.OnWheelEvent(func(_ func(event *qt.QWheelEvent), _ *qt.QWheelEvent) {})
+	v.graphicsView.OnScrollContentsBy(func(_ func(dx int, dy int), _ int, _ int) {})
 }
 
 func (v *View) onMouseReleaseEvent(_ func(event *qt.QMouseEvent), event *qt.QMouseEvent) {
-	if v.panning.End() {
-		return
-	}
-
-	if item := v.graphicsView.ItemAt(event.Pos()); item == nil {
+	if item := v.graphicsView.ItemAt(event.Pos()); item != nil {
 		if key := item.Data(int(KeyHex)).ToString(); key != "" {
 			v.hexes[key].OnClicked()
 		}
 	}
 }
 
-func (v *View) onResizeEvent(_ *qt.QRect) {
-	viewport := v.graphicsView.Viewport().Rect().ToRectF()
-	padX := float64(viewport.Width()) / 4
-	padY := float64(viewport.Height()) / 4
-
-	sceneRect := v.graphicsScene.ItemsBoundingRect()
-	sceneRect = sceneRect.Adjusted(-padX, -padY, padX, padY)
-
-	if sceneRect.Width() < viewport.Width() {
-		sceneRect.SetWidth(viewport.Width())
-	}
-
-	if sceneRect.Height() < viewport.Height() {
-		sceneRect.SetHeight(viewport.Height())
-	}
-
-	v.graphicsView.SetSceneRect(sceneRect)
+func (v *View) centerMainCharacter() {
+	cx, cy := HexCenterPos(v.stateModel.MainCharacter.LocationCoord)
+	rect := v.graphicsView.Rect().ToRectF()
+	translate := v.graphicsView.Transform()
+	dx := -cx + rect.Width()/2 - translate.Dx()
+	dy := -cy + rect.Height()/2 - translate.Dy()
+	v.graphicsView.Translate(dx, dy)
 }
 
 func (v *View) renderBackButton() *qt.QWidget {

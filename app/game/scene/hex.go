@@ -29,17 +29,18 @@ func NewHex(
 	return item
 }
 
+func (h *Hex) Item() *qt.QGraphicsItem {
+	return h.gPath.QGraphicsItem
+}
+
 func (h *Hex) render() {
 	h.renderPath()
 	h.renderText()
 }
 
 func (h *Hex) renderPath() {
-	cx := hexSize * 1.5 * float64(h.locationHex.Q)
-	cy := hexSize * (sqrt3/2*float64(h.locationHex.Q) + sqrt3*float64(h.locationHex.R))
-
 	h.gPath = qt.NewQGraphicsPathItem2(qt.NewQPainterPath3(hexPath))
-	h.gPath.SetPos2(asIso(cx, cy))
+	h.gPath.SetPos2(HexCenterPos(h.locationHex.AxialCoord))
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
 	h.gPath.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.StringKey()))
 	h.scene.AddItem(h.gPath.QGraphicsItem)

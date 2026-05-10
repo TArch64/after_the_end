@@ -1,6 +1,8 @@
 package scene
 
 import (
+	"after_the_end/db/model"
+
 	qt "github.com/mappu/miqt/qt6"
 )
 
@@ -31,6 +33,12 @@ func newHexPath() *qt.QPainterPath {
 
 	path.CloseSubpath()
 	return path
+}
+
+func HexCenterPos(hex *model.AxialCoord) (float64, float64) {
+	cx := hexSize * 1.5 * float64(hex.Q)
+	cy := hexSize * (sqrt3/2*float64(hex.Q) + sqrt3*float64(hex.R))
+	return asIso(cx, cy)
 }
 
 func asIso(x, y float64) (float64, float64) {
