@@ -9,8 +9,9 @@ import (
 type LocationHex struct {
 	bun.BaseModel `bun:"table:location_hexes,alias:lh"`
 	*axial.Coord
-	Elevation  int `bun:",notnull"`
-	LocationID ID  `bun:",notnull"`
+	Elevation  int         `bun:",notnull"`
+	LocationID ID          `bun:",notnull"`
+	AxialCoord *AxialCoord `bun:"coord,scanonly"`
 
 	// Relations
 	Location *Location `bun:"rel:belongs-to,join:location_id=id"`

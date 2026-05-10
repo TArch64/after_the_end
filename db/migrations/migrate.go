@@ -32,3 +32,10 @@ func Up(db *bun.DB) (err error) {
 	}
 	return nil
 }
+
+func ddl(query string) (migrate.MigrationFunc, migrate.MigrationFunc) {
+	return func(ctx context.Context, db *bun.DB) error {
+		_, err := db.ExecContext(ctx, query)
+		return err
+	}, nil
+}

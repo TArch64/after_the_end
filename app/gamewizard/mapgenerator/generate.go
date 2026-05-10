@@ -51,7 +51,7 @@ func generateWorldMap() *model.Location {
 		Name: "World Map",
 	}
 
-	for coord := range axial.RectIterator(width, height) {
+	for coord := range axial.RectSeq(width, height) {
 		location.Hexes = append(location.Hexes, &model.LocationHex{
 			Coord: coord,
 		})

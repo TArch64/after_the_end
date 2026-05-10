@@ -12,7 +12,6 @@ const hexSize = 50
 
 type Hex struct {
 	gPath       *qt.QGraphicsPathItem
-	gText       *qt.QGraphicsTextItem
 	scene       *qt.QGraphicsScene
 	locationHex *model.LocationHex
 }
@@ -42,27 +41,21 @@ func (h *Hex) renderPath() {
 	h.gPath = qt.NewQGraphicsPathItem2(qt.NewQPainterPath3(hexPath))
 	h.gPath.SetPos2(asIso(cx, cy))
 	h.gPath.SetBrush(qt.NewQBrush3(qt.NewQColor3(136, 170, 255)))
-	h.setHexData(h.gPath.QGraphicsItem)
+	h.gPath.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.StringKey()))
 	h.scene.AddItem(h.gPath.QGraphicsItem)
 }
 
 func (h *Hex) renderText() {
-	h.gText = qt.NewQGraphicsTextItem4(
-		fmt.Sprintf("q %d\nr %d\ns %d",
-			h.locationHex.Q,
-			h.locationHex.R,
-			h.locationHex.S,
-		),
-		h.gPath.QGraphicsItem,
-	)
+	text := qt.NewQGraphicsTextItem2(h.locationHex.StringKey())
+	h.addChild(text.QGraphicsItem)
 
-	rect := h.gText.BoundingRect()
-	h.gText.SetPos2(-rect.Width()/2, -rect.Height()/2)
-	h.setHexData(h.gText.QGraphicsItem)
+	rect := text.BoundingRect()
+	text.SetPos2(-rect.Width()/2, -rect.Height()/2)
 }
 
-func (h *Hex) setHexData(item *qt.QGraphicsItem) {
-	item.SetData(int(KeyHex), qt.NewQVariant14(h.locationHex.StringKey()))
+func (h *Hex) addChild(child *qt.QGraphicsItem) {
+	child.SetParentItem(h.gPath.QGraphicsItem)
+	child.SetAcceptedMouseButtons(qt.NoButton)
 }
 
 func (h *Hex) OnClicked() {
