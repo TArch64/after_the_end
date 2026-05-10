@@ -1,6 +1,8 @@
 package scene
 
 import (
+	"time"
+
 	"after_the_end/app/game/command"
 	"after_the_end/app/game/command/cmd"
 	"after_the_end/app/game/state"
@@ -20,11 +22,12 @@ const (
 
 type View struct {
 	*backbone.StatelessView
-	stateModel    *state.Model
-	hexes         map[string]*Hex
-	activeHex     *Hex
-	graphicsScene *qt.QGraphicsScene
-	graphicsView  *qt.QGraphicsView
+	stateModel       *state.Model
+	hexes            map[string]*Hex
+	activeHex        *Hex
+	graphicsScene    *qt.QGraphicsScene
+	graphicsView     *qt.QGraphicsView
+	viewportTimeLine *qt.QTimeLine
 }
 
 func NewView(stateModel *state.Model) *View {
@@ -40,12 +43,12 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.renderGraphicsView()
 
 	qttimer.NextTick(func() {
-		v.activateHex(v.stateModel.MainCharacter.LocationCoord)
+		v.activateHex(v.stateModel.MainCharacter.LocationCoord, false)
 	})
 
 	v.AutoDispose(
 		command.MainThreadHandle[*cmd.ActivateHex](func(cmd *cmd.ActivateHex) {
-			v.activateHex(cmd.Coord)
+			v.activateHex(cmd.Coord, true)
 		}),
 	)
 
@@ -83,7 +86,7 @@ func (v *View) renderGraphicsView() {
 	v.graphicsView.OnScrollContentsBy(func(_ func(dx int, dy int), _ int, _ int) {})
 }
 
-func (v *View) activateHex(coord *model.AxialCoord) {
+func (v *View) activateHex(coord *model.AxialCoord, animated bool) {
 	activatingHex := v.hexes[coord.StringKey()]
 	if activatingHex.Active {
 		return
@@ -98,10 +101,40 @@ func (v *View) activateHex(coord *model.AxialCoord) {
 
 	pos := v.activeHex.Item().Pos()
 	rect := v.graphicsView.Rect().ToRectF()
+	dx := -pos.X() + rect.Width()/2
+	dy := -pos.Y() + rect.Height()/2
+
+	endPos := qt.NewQPointF3(dx, dy)
 	translate := v.graphicsView.Transform()
-	dx := -pos.X() + rect.Width()/2 - translate.Dx()
-	dy := -pos.Y() + rect.Height()/2 - translate.Dy()
-	v.graphicsView.Translate(dx, dy)
+	startPos := qt.NewQPointF3(translate.Dx(), translate.Dy())
+	delta := endPos.OperatorMinusAssign(startPos)
+
+	if animated {
+		v.animateViewTranslate(delta)
+	} else {
+		v.graphicsView.Translate(delta.X(), delta.Y())
+	}
+}
+
+func (v *View) animateViewTranslate(delta *qt.QPointF) {
+	if v.viewportTimeLine != nil {
+		return
+	}
+
+	distance := qt.NewQLineF2(qt.NewQPointF(), delta)
+	duration := max(500, time.Duration(distance.Length()*1))
+
+	v.viewportTimeLine = qttimer.TimeLine(&qttimer.Translation{
+		Duration: duration * time.Millisecond,
+
+		Tick: func(step float64) {
+			v.graphicsView.Translate(delta.X()*step, delta.Y()*step)
+		},
+
+		Finish: func() {
+			v.viewportTimeLine = nil
+		},
+	})
 }
 
 func (v *View) renderBackButton() *qt.QWidget {

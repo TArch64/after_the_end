@@ -11,7 +11,6 @@ import (
 type Hex struct {
 	root        *qt.QGraphicsPathItem
 	outline     *qt.QGraphicsPathItem
-	hover       *qt.QGraphicsPathItem
 	scene       *qt.QGraphicsScene
 	locationHex *model.LocationHex
 	Active      bool
@@ -55,10 +54,6 @@ func (h *Hex) renderPath() {
 	})
 
 	h.root.OnMouseReleaseEvent(h.OnClicked)
-
-	h.root.SetAcceptHoverEvents(true)
-	h.root.OnHoverEnterEvent(h.OnHoverEnter)
-	h.root.OnHoverLeaveEvent(h.OnHoverLeave)
 }
 
 func (h *Hex) renderText() {
@@ -72,7 +67,6 @@ func (h *Hex) renderText() {
 func (h *Hex) addChild(child *qt.QGraphicsItem) {
 	child.SetParentItem(h.root.QGraphicsItem)
 	child.SetAcceptedMouseButtons(qt.NoButton)
-	child.SetAcceptHoverEvents(false)
 	child.InstallSceneEventFilter(h.root.QGraphicsItem)
 }
 
@@ -80,24 +74,6 @@ func (h *Hex) OnClicked(_ func(event *qt.QGraphicsSceneMouseEvent), _ *qt.QGraph
 	command.Dispatch(&cmd.ActivateHex{
 		Coord: h.locationHex.Coord,
 	})
-}
-
-func (h *Hex) OnHoverEnter(_ func(event *qt.QGraphicsSceneHoverEvent), _ *qt.QGraphicsSceneHoverEvent) {
-	if h.Active {
-		return
-	}
-
-	h.hover = qt.NewQGraphicsPathItem2(qt.NewQPainterPath3(hexPath))
-	h.hover.SetPen(qt.NewQPen2(qt.NoPen))
-	h.hover.SetBrush(qt.NewQBrush3(qt.NewQColor11(0, 0, 0, 51)))
-	h.addChild(h.hover.QGraphicsItem)
-}
-
-func (h *Hex) OnHoverLeave(_ func(event *qt.QGraphicsSceneHoverEvent), event *qt.QGraphicsSceneHoverEvent) {
-	if h.hover != nil {
-		h.hover.Delete()
-		h.hover = nil
-	}
 }
 
 func (h *Hex) SetActive() {
@@ -111,6 +87,7 @@ func (h *Hex) SetActive() {
 
 func (h *Hex) SetInactive() {
 	h.outline.Delete()
+	h.outline = nil
 	h.Active = false
 }
 

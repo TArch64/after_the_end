@@ -5,7 +5,7 @@ import (
 	"after_the_end/helper/uniqid"
 )
 
-type handlerFn func(cmd Cmd)
+type handlerFunc func(cmd Cmd)
 
 var handlerId = uniqid.New()
 
@@ -17,7 +17,7 @@ type CmdHandler struct {
 	ID       uniqid.ID
 	Kind     string
 	registry *Registry
-	action   handlerFn
+	action   handlerFunc
 }
 
 var _ backbone.Disposable = (*CmdHandler)(nil)
