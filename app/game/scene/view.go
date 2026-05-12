@@ -9,6 +9,7 @@ import (
 	"after_the_end/app/router"
 	"after_the_end/backbone"
 	"after_the_end/db/model"
+	"after_the_end/helper/axial"
 	"after_the_end/helper/qttimer"
 
 	qt "github.com/mappu/miqt/qt6"
@@ -43,12 +44,12 @@ func (v *View) ViewInit() *qt.QWidget {
 	v.renderGraphicsView()
 
 	qttimer.NextTick(func() {
-		v.activateHex(v.stateModel.MainCharacter.LocationCoord, false)
+		v.activateHex(v.stateModel.MainCharacter.LocationCoord, false, nil)
 	})
 
 	v.AutoDispose(
-		command.MainThreadHandle[*cmd.ActivateHex](func(cmd *cmd.ActivateHex) {
-			v.activateHex(cmd.Coord, true)
+		command.MainThreadHandle[*cmd.MoveMainCharacter](func(cmd *cmd.MoveMainCharacter) {
+			v.activateHex(cmd.Coord, true, cmd.Complete)
 		}),
 	)
 
@@ -86,7 +87,7 @@ func (v *View) renderGraphicsView() {
 	v.graphicsView.OnScrollContentsBy(func(_ func(dx int, dy int), _ int, _ int) {})
 }
 
-func (v *View) activateHex(coord *model.AxialCoord, animated bool) {
+func (v *View) activateHex(coord *axial.Coord, animated bool, onFinish func()) {
 	activatingHex := v.hexes[coord.StringKey()]
 	if activatingHex.Active {
 		return
@@ -110,13 +111,13 @@ func (v *View) activateHex(coord *model.AxialCoord, animated bool) {
 	delta := endPos.OperatorMinusAssign(startPos)
 
 	if animated {
-		v.animateViewTranslate(delta)
+		v.animateViewTranslate(delta, onFinish)
 	} else {
 		v.graphicsView.Translate(delta.X(), delta.Y())
 	}
 }
 
-func (v *View) animateViewTranslate(delta *qt.QPointF) {
+func (v *View) animateViewTranslate(delta *qt.QPointF, onFinish func()) {
 	if v.viewportTimeLine != nil {
 		return
 	}
@@ -133,6 +134,7 @@ func (v *View) animateViewTranslate(delta *qt.QPointF) {
 
 		Finish: func() {
 			v.viewportTimeLine = nil
+			onFinish()
 		},
 	})
 }

@@ -4,14 +4,6 @@ import (
 	"github.com/mappu/miqt/qt6/mainthread"
 )
 
-func Dispatch[C Cmd](cmd C) {
-	go registry.Read(cmd.Kind(), func(handlers []*CmdHandler) {
-		for _, handler := range handlers {
-			handler.action(cmd)
-		}
-	})
-}
-
 func Handle[C Cmd](action func(cmd C)) *CmdHandler {
 	handler := &CmdHandler{
 		ID:       handlerId.Next(),

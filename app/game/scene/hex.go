@@ -71,9 +71,10 @@ func (h *Hex) addChild(child *qt.QGraphicsItem) {
 }
 
 func (h *Hex) OnClicked(_ func(event *qt.QGraphicsSceneMouseEvent), _ *qt.QGraphicsSceneMouseEvent) {
-	command.Dispatch(&cmd.ActivateHex{
-		Coord: h.locationHex.Coord,
-	})
+	if h.Active {
+		return
+	}
+	command.Dispatch(cmd.NewWalkPath(h.locationHex.Coord))
 }
 
 func (h *Hex) SetActive() {

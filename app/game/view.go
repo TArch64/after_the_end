@@ -1,6 +1,9 @@
 package game
 
 import (
+	"after_the_end/app/dialog/reporterr"
+	"after_the_end/app/game/command"
+	"after_the_end/app/game/command/cmd"
 	"after_the_end/app/game/scene"
 	"after_the_end/app/game/state"
 	"after_the_end/app/router"
@@ -29,5 +32,11 @@ func (v *View) ViewInit() *qt.QWidget {
 	stack := qt.NewQStackedLayout(widget)
 	// stack.AddWidget(v.Mount(overlay.NewView()))
 	stack.AddWidget(v.Mount(scene.NewView(v.Model)))
+
+	command.MainThreadHandle[*cmd.ReportErr](v.reportErrCmd)
 	return widget
+}
+
+func (v *View) reportErrCmd(cmd *cmd.ReportErr) {
+	reporterr.Show(v.ViewRoot(), cmd)
 }

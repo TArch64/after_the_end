@@ -3,6 +3,8 @@ package model
 import (
 	"time"
 
+	"after_the_end/helper/axial"
+
 	"github.com/uptrace/bun"
 )
 
@@ -12,7 +14,7 @@ type Character struct {
 	Type          CharacterType `bun:",notnull"`
 	Name          string        `bun:",notnull"`
 	LocationID    ID            `bun:",nullzero"`
-	LocationCoord *AxialCoord   `bun:",nullzero"`
+	LocationCoord *axial.Coord  `bun:",nullzero"`
 	SaveID        ID            `bun:",notnull"`
 	CreatedAt     time.Time     `bun:",notnull,default:current_timestamp"`
 	UpdatedAt     time.Time     `bun:",notnull,default:current_timestamp"`

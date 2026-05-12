@@ -4,6 +4,7 @@
     <option name="excludedPackages">
       <array>
         <option value="github.com/mappu/miqt/qt" />
+        <option value="golang.org/x/exp/slices" />
         <option value="golang.org/x/exp/slog" />
         <option value="golang.org/x/net/context" />
       </array>

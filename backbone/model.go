@@ -10,12 +10,15 @@ type Model interface {
 }
 
 type BaseModel struct {
+	*DisposableController
 	Ctx       context.Context
 	cancelCtx context.CancelFunc
 }
 
 func NewBaseModel() *BaseModel {
-	return &BaseModel{}
+	return &BaseModel{
+		DisposableController: NewDisposableController(),
+	}
 }
 
 func (m *BaseModel) ModelInit() {
@@ -28,4 +31,5 @@ func (m *BaseModel) ModelInitChild(child *BaseModel) {
 
 func (m *BaseModel) ModelDestroy() {
 	m.cancelCtx()
+	m.dispose()
 }

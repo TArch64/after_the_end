@@ -9,7 +9,7 @@ import (
 var viewID = uniqid.New()
 
 type StatelessView struct {
-	*DisposableView
+	*DisposableController
 	children map[uniqid.ID]View
 	id       uniqid.ID
 	root     *qt.QWidget
@@ -17,8 +17,8 @@ type StatelessView struct {
 
 func NewStatelessView() *StatelessView {
 	return &StatelessView{
-		DisposableView: NewDisposableView(),
-		id:             viewID.Next(),
+		DisposableController: NewDisposableController(),
+		id:                   viewID.Next(),
 	}
 }
 

@@ -37,10 +37,10 @@ func ParseCoord(str string) (*Coord, error) {
 	return &Coord{Q: q, R: r}, nil
 }
 
-func (c Coord) S() int {
+func (c *Coord) S() int {
 	return -c.Q - c.R
 }
 
-func (c Coord) StringKey() string {
+func (c *Coord) StringKey() string {
 	return fmt.Sprintf("%d%s%d", c.Q, CoordSeparator, c.R)
 }

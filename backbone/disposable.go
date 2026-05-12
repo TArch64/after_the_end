@@ -4,22 +4,22 @@ type Disposable interface {
 	Dispose()
 }
 
-type DisposableView struct {
+type DisposableController struct {
 	handlers []Disposable
 }
 
-func NewDisposableView() *DisposableView {
-	return &DisposableView{}
+func NewDisposableController() *DisposableController {
+	return &DisposableController{}
 }
 
-func (v *DisposableView) AutoDispose(disposable Disposable) {
-	v.handlers = append(v.handlers, disposable)
+func (c *DisposableController) AutoDispose(disposable Disposable) {
+	c.handlers = append(c.handlers, disposable)
 }
 
-func (v *DisposableView) dispose() {
-	for _, handler := range v.handlers {
+func (c *DisposableController) dispose() {
+	for _, handler := range c.handlers {
 		handler.Dispose()
 	}
 
-	v.handlers = nil
+	c.handlers = nil
 }

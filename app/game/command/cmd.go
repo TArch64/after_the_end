@@ -13,6 +13,11 @@ type Cmd interface {
 	Kind() string
 }
 
+type WaitableCmd interface {
+	Cmd
+	Waitable
+}
+
 type CmdHandler struct {
 	ID       uniqid.ID
 	Kind     string

@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"after_the_end/db/model"
+	"after_the_end/helper/axial"
 
 	qt "github.com/mappu/miqt/qt6"
 )
@@ -38,7 +38,7 @@ func newHexPath(inset float64) *qt.QPainterPath {
 	return path
 }
 
-func HexCenterPos(coord *model.AxialCoord) (float64, float64) {
+func HexCenterPos(coord *axial.Coord) (float64, float64) {
 	cx := hexSize * 1.5 * float64(coord.Q)
 	cy := hexSize * (sqrt3/2*float64(coord.Q) + sqrt3*float64(coord.R))
 	return asIso(cx, cy)
